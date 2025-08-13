@@ -2,11 +2,12 @@ import { useStore } from '../State/store';
 import { AppState } from '../State/store';
 
 // Selector to get only the needed state for the HUD
-// This prevents re-renders when other parts of the state change
 const hudSelector = (state: AppState) => ({
   wave: state.wave,
   time: state.time,
-  // TODO: Add economy and perf stats here once available
+  ammo: state.ammo,
+  materials: state.materials,
+  manpower: state.manpower,
 });
 
 /**
@@ -14,7 +15,14 @@ const hudSelector = (state: AppState) => ({
  * It shows critical information like wave, time, resources, and FPS.
  */
 function HUD() {
-  const { wave, time } = useStore(hudSelector);
+  const { wave, time, ammo, materials, manpower } = useStore(hudSelector);
+
+  const handleReset = () => {
+    if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+      useStore.persist.clearStorage();
+      window.location.reload();
+    }
+  };
 
   const hudStyle: React.CSSProperties = {
     position: 'absolute',
@@ -27,18 +35,28 @@ function HUD() {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     display: 'flex',
     justifyContent: 'space-around',
+    alignItems: 'center',
     zIndex: 1, // Ensure it's on top of the canvas
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    padding: '5px 10px',
+    color: 'white',
+    backgroundColor: '#dc3545',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   };
 
   return (
     <div style={hudStyle}>
       <div>Wave: {wave}</div>
       <div>Time: {Math.floor(time)}s</div>
-      {/* Placeholders for economy and perf from spec */}
-      <div>Ammo: 1000</div>
-      <div>Materials: 500</div>
-      <div>Manpower: 50</div>
+      <div>Ammo: {ammo}</div>
+      <div>Materials: {materials}</div>
+      <div>Manpower: {manpower}</div>
       <div>FPS: --</div>
+      <button onClick={handleReset} style={buttonStyle}>Reset Game</button>
     </div>
   );
 }

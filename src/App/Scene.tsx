@@ -1,4 +1,12 @@
 import { OrbitControls } from '@react-three/drei';
+import GameManager from '../Core/GameManager';
+import SoldierGroup from '../Components/units/SoldierGroup';
+import EnemyGroup from '../Components/units/EnemyGroup';
+import TracerPool from '../Components/units/TracerPool';
+import MuzzleFlash from '../Components/units/MuzzleFlash';
+import BuildManager from '../Systems/BuildManager';
+import GhostPreview from '../Components/buildables/GhostPreview';
+import BuildablesGroup from '../Components/buildables/BuildablesGroup';
 
 /**
  * The main 3D scene graph.
@@ -8,6 +16,9 @@ import { OrbitControls } from '@react-three/drei';
 function Scene() {
   return (
     <>
+      <GameManager />
+      <BuildManager />
+
       {/* Lighting */}
       <ambientLight intensity={0.5} />
       <directionalLight
@@ -34,6 +45,15 @@ function Scene() {
         <boxGeometry args={[2, 2, 2]}/>
         <meshStandardMaterial color="orange" />
       </mesh>
+
+      <SoldierGroup />
+      <EnemyGroup />
+      <BuildablesGroup />
+
+      {/* Visual Effects */}
+      <GhostPreview />
+      <TracerPool />
+      <MuzzleFlash />
 
       {/* Development Controls */}
       <OrbitControls />

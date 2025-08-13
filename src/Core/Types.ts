@@ -4,9 +4,18 @@ export type Vec2 = [number, number];
 export type Team = 'Player' | 'Enemy';
 
 // These are placeholders for IDs, allowing for more type-safe code.
-// For example, instead of just `string`, we have `WeaponSpecId`.
-type WeaponSpecId = string;
-type SoldierClassId = string;
+export type WeaponSpecId = string;
+export type SoldierClassId = string;
+
+export interface WeaponSpec {
+  id: WeaponSpecId;
+  name: string;
+  roundsPerMinute: number;
+  muzzleSpeed: number; // m/s
+  damage: number;
+  dispersionSigma: number; // radians
+  tracerRatio: number; // e.g., 4 means 1 in 4 shots is a tracer
+}
 
 export interface Soldier {
   id: string;
@@ -31,6 +40,7 @@ export interface Projectile {
   id: string;
   fromId: string;
   origin: Vec2;
+  pos: Vec2;             // current position in metres
   vel: Vec2;             // m s^-1
   life: number;          // seconds remaining
   damage: number;
