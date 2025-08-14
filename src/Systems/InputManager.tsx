@@ -23,7 +23,7 @@ function InputManager() {
   const { camera } = useThree();
 
   const createNewSoldier = (classId: SoldierClassId): Soldier => {
-    const xPos = (Math.random() - 0.5) * 40;
+    const xPos = (Math.random() - 0.5) * 80; // Widen spawn area for larger map
     return { id: uuidv4(), team: 'Player', pos: [xPos, 2], hp: 100, armor: 0.1, weapon: 'rifle', classId: classId, fireCooldown: 0, actionCooldown: 0, aimSpread: 0.1, suppressed: 0, xp: 0, moveTarget: null };
   };
 

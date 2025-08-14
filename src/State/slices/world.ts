@@ -14,8 +14,8 @@ export interface WorldSlice {
   };
 }
 
-const WORLD_WIDTH = 120;
-const WORLD_DEPTH = 80;
+const WORLD_WIDTH = 240;
+const WORLD_DEPTH = 160;
 export const CHUNK_SIZE = 16;
 
 const initialTerrain: number[][] = Array(WORLD_WIDTH).fill(0).map(() => Array(WORLD_DEPTH).fill(0));

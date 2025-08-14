@@ -3,9 +3,9 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore } from '../../State/store';
 
-const NUM_PARTICLES = 2000;
-const RAIN_AREA_SIZE = 120; // Match world width
-const RAIN_HEIGHT = 50;
+const NUM_PARTICLES = 4000; // Increase particles for larger area
+const RAIN_AREA_SIZE = 240; // Match new world width
+const RAIN_HEIGHT = 80; // Make rain fall from higher up
 
 interface RainParticle {
     position: THREE.Vector3;

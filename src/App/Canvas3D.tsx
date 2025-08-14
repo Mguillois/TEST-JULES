@@ -48,7 +48,7 @@ function Canvas3D() {
         shadows
         dpr={[1, Math.min(2, window.devicePixelRatio)]}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
-        camera={{ position: [0, 80, 100], fov: 50 }}
+        camera={{ position: [0, 160, 200], fov: 50 }}
         frameloop="always"
       >
         <WebGLContextManager />
