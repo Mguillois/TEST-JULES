@@ -6,6 +6,7 @@ export interface UnitsSlice {
   enemies: Enemy[];
   projectiles: Projectile[];
   muzzleFlashes: Vec2[]; // Positions of flashes this frame
+  impactPuffs: Vec2[]; // Positions of ground impacts this frame
   actions: {
     // Placeholder for actions to add, remove, and update units.
     // These will be implemented as part of the game systems.
@@ -25,5 +26,6 @@ export const createUnitsSlice: StateCreator<UnitsSlice, [], [], UnitsSlice> = ()
   enemies: [],
   projectiles: [],
   muzzleFlashes: [],
+  impactPuffs: [],
   actions: {},
 });

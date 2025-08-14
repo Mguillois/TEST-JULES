@@ -8,6 +8,7 @@ const hudSelector = (state: AppState) => ({
   ammo: state.ammo,
   materials: state.materials,
   manpower: state.manpower,
+  toggleResearchPanel: state.actions.toggleResearchPanel,
 });
 
 /**
@@ -15,7 +16,7 @@ const hudSelector = (state: AppState) => ({
  * It shows critical information like wave, time, resources, and FPS.
  */
 function HUD() {
-  const { wave, time, ammo, materials, manpower } = useStore(hudSelector);
+  const { wave, time, ammo, materials, manpower, toggleResearchPanel } = useStore(hudSelector);
 
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
@@ -56,6 +57,7 @@ function HUD() {
       <div>Materials: {materials}</div>
       <div>Manpower: {manpower}</div>
       <div>FPS: --</div>
+      <button onClick={toggleResearchPanel} style={buttonStyle}>Research</button>
       <button onClick={handleReset} style={buttonStyle}>Reset Game</button>
     </div>
   );

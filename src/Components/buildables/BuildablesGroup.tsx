@@ -1,11 +1,14 @@
 import { useStore } from '../../State/store';
 import { AppState } from '../../State/store';
-import TrenchSegment from './TrenchSegment';
+import BarbedWire from './BarbedWire';
+import Depot from './Depot';
+import Workshop from './Workshop';
+import Barracks from './Barracks';
 
 const buildingsSelector = (state: AppState) => state.buildings;
 
 /**
- * A component that renders all placed buildable structures.
+ * A component that renders all placed buildable structures (not trenches).
  */
 function BuildablesGroup() {
   const buildings = useStore(buildingsSelector);
@@ -14,9 +17,14 @@ function BuildablesGroup() {
     <group name="buildables">
       {buildings.map((building) => {
         switch (building.kind) {
-          case 'Trench':
-            return <TrenchSegment key={building.id} building={building} />;
-          // Other building types will be added here later
+          case 'BarbedWire':
+            return <BarbedWire key={building.id} building={building} />;
+          case 'Depot':
+            return <Depot key={building.id} building={building} />;
+          case 'Workshop':
+            return <Workshop key={building.id} building={building} />;
+          case 'Barracks':
+            return <Barracks key={building.id} building={building} />;
           default:
             return null;
         }

@@ -1,10 +1,10 @@
 import { StateCreator } from 'zustand';
-import { Buildable, Vec2 } from '../../Core/Types';
+import { Vec2, Buildable } from '../../Core/Types';
 
-export type BuildMode = 'none' | 'trench' | 'wire' | 'mgnest' | 'bunker';
+export type BuildMode = 'none' | 'trench' | 'wire' | 'depot' | 'workshop' | 'barracks';
 
 export interface BuildSlice {
-  buildings: Buildable[];
+  buildings: Buildable[]; // For discrete objects like barbed wire, MG nests, etc.
   buildMode: BuildMode;
   ghostPosition: Vec2 | null;
   isGhostPlacementValid: boolean;
@@ -22,7 +22,6 @@ export const createBuildSlice: StateCreator<BuildSlice, [], [], BuildSlice> = (s
   isGhostPlacementValid: false,
   actions: {
     setBuildMode: (mode) => {
-      // When changing mode, reset the ghost position
       set({ buildMode: mode, ghostPosition: null, isGhostPlacementValid: false });
     },
     setGhostState: (pos, isValid) => {

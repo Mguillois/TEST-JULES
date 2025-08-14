@@ -4,9 +4,11 @@ import SoldierGroup from '../Components/units/SoldierGroup';
 import EnemyGroup from '../Components/units/EnemyGroup';
 import TracerPool from '../Components/units/TracerPool';
 import MuzzleFlash from '../Components/units/MuzzleFlash';
+import ImpactPuff from '../Components/effects/ImpactPuff';
 import BuildManager from '../Systems/BuildManager';
 import GhostPreview from '../Components/buildables/GhostPreview';
 import BuildablesGroup from '../Components/buildables/BuildablesGroup';
+import VoxelTerrain from '../Components/terrain/VoxelTerrain';
 
 /**
  * The main 3D scene graph.
@@ -19,7 +21,8 @@ function Scene() {
       <GameManager />
       <BuildManager />
 
-      {/* Lighting */}
+      {/* Environment */}
+      <fog attach="fog" args={['#5B5D5A', 50, 150]} />
       <ambientLight intensity={0.5} />
       <directionalLight
         castShadow
@@ -34,11 +37,7 @@ function Scene() {
         shadow-camera-bottom={-40}
       />
 
-      {/* Placeholder ground plane corresponding to the playfield size */}
-      <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <planeGeometry args={[120, 80]} />
-        <meshStandardMaterial color="#807961" /> {/* A brownish-green color for earth */}
-      </mesh>
+      <VoxelTerrain />
 
       {/* A simple box to test shadows and lighting */}
       <mesh castShadow position={[0, 1, 0]}>
@@ -54,6 +53,7 @@ function Scene() {
       <GhostPreview />
       <TracerPool />
       <MuzzleFlash />
+      <ImpactPuff />
 
       {/* Development Controls */}
       <OrbitControls />

@@ -1,35 +1,40 @@
 import { Enemy } from '../Core/Types';
+import { WORLD_WIDTH, WORLD_DEPTH } from '../State/slices/world';
+import { soundSystem } from './SoundSystem';
 
-// This Hit type will be defined and exported from ProjectileSystem
-// For now, we define it here to satisfy TypeScript.
 export interface Hit {
   enemyId: string;
   damage: number;
 }
 
 class DamageSystem {
-  /**
-   * Applies damage from hits to a list of enemies.
-   * @param enemies The current array of enemies.
-   * @param hits An array of hit events from the collision detection system.
-   * @returns A new array of enemies with updated health, with dead enemies removed.
-   */
-  public applyHits(enemies: Enemy[], hits: Hit[]): Enemy[] {
+  public applyHits(enemies: Enemy[], hits: Hit[], terrain: number[][]): Enemy[] {
     if (hits.length === 0) {
       return enemies;
     }
 
-    // Create a map to aggregate damage per enemy ID for efficiency
     const damageMap = new Map<string, number>();
     for (const hit of hits) {
       damageMap.set(hit.enemyId, (damageMap.get(hit.enemyId) || 0) + hit.damage);
+      soundSystem.playSound('impact_flesh');
     }
 
-    // Apply the aggregated damage to each affected enemy
     const updatedEnemies = enemies.map(enemy => {
       if (damageMap.has(enemy.id)) {
-        const totalDamage = damageMap.get(enemy.id)!;
-        // Apply armor damage reduction
+        let totalDamage = damageMap.get(enemy.id)!;
+
+        // Check for cover
+        const isStationary = enemy.state === 'Pause' || enemy.state === 'Fire';
+        const arrayX = Math.round(enemy.pos[0] + WORLD_WIDTH / 2);
+        const arrayZ = Math.round(enemy.pos[1] + WORLD_DEPTH / 2);
+
+        if (arrayX >= 0 && arrayX < WORLD_WIDTH && arrayZ >= 0 && arrayZ < WORLD_DEPTH) {
+            const terrainHeight = terrain[arrayX][arrayZ];
+            if (isStationary && terrainHeight < 0) { // In a trench and stationary
+                totalDamage *= 0.7; // 30% damage reduction
+            }
+        }
+
         const absorbedDamage = totalDamage * (1 - enemy.armor);
         const newHp = enemy.hp - absorbedDamage;
         return { ...enemy, hp: newHp };
@@ -37,7 +42,6 @@ class DamageSystem {
       return enemy;
     });
 
-    // Filter out enemies that have been killed
     return updatedEnemies.filter(enemy => enemy.hp > 0);
   }
 }

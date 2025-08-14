@@ -1,66 +1,64 @@
 import { Buildable, Vec2 } from '../Core/Types';
+import { BuildMode } from '../State/slices/build';
 
-const TRENCH_COST = 10; // materials
-const TRENCH_SIZE: Vec2 = [4, 2]; // A trench segment is 4m long, 2m wide
+// Define constants for buildables
+const SIZES = {
+    trench: [4, 2] as Vec2,
+    wire: [4, 1] as Vec2,
+    depot: [5, 5] as Vec2,
+    workshop: [4, 4] as Vec2,
+    barracks: [6, 4] as Vec2,
+};
+const COSTS = {
+    trench: 10,
+    wire: 5,
+    depot: 100,
+    workshop: 150,
+    barracks: 80,
+};
 
 // Helper to check if two AABBs overlap
 function checkAABBOverlap(posA: Vec2, sizeA: Vec2, posB: Vec2, sizeB: Vec2): boolean {
-    // AABB 1
     const aMinX = posA[0] - sizeA[0] / 2;
     const aMaxX = posA[0] + sizeA[0] / 2;
     const aMinY = posA[1] - sizeA[1] / 2;
     const aMaxY = posA[1] + sizeA[1] / 2;
 
-    // AABB 2
     const bMinX = posB[0] - sizeB[0] / 2;
     const bMaxX = posB[0] + sizeB[0] / 2;
     const bMinY = posB[1] - sizeB[1] / 2;
     const bMaxY = posB[1] + sizeB[1] / 2;
 
-    // Check for non-overlap
     if (aMaxX < bMinX || aMinX > bMaxX || aMaxY < bMinY || aMinY > bMaxY) {
         return false;
     }
     return true;
 }
 
-
-/**
- * A collection of pure functions for the building system.
- */
 export const buildSystem = {
-    /**
-     * Gets the material cost for a given buildable type.
-     */
-    getCost: (type: 'trench'): number => {
-        switch (type) {
-            case 'trench':
-                return TRENCH_COST;
-            default:
-                return Infinity;
-        }
+    getCost: (type: keyof typeof COSTS): number => {
+        return COSTS[type] || Infinity;
     },
 
-    /**
-     * Validates if a new building can be placed at the desired position.
-     * @param newBuildingPos The center position of the new building.
-     * @param existingBuildings The array of already placed buildings.
-     * @returns True if the placement is valid, false otherwise.
-     */
-    validatePlacement: (newBuildingPos: Vec2, existingBuildings: Buildable[]): boolean => {
-        // For now, we only have trenches
-        const newBuildingSize = TRENCH_SIZE;
+    getSize: (type: keyof typeof SIZES): Vec2 => {
+        return SIZES[type] || [0, 0];
+    },
 
-        // Check for overlaps with existing buildings
+    validatePlacement: (newBuildingPos: Vec2, type: BuildMode, existingBuildings: Buildable[]): boolean => {
+        if (type === 'none') return false;
+        if (type === 'trench') {
+            return true;
+        }
+
+        const newBuildingSize = buildSystem.getSize(type);
+
         for (const building of existingBuildings) {
-            // Assuming all buildings are trenches for now
-            if (checkAABBOverlap(newBuildingPos, newBuildingSize, building.cells[0], TRENCH_SIZE)) {
+            const existingKind = building.kind.toLowerCase() as keyof typeof SIZES;
+            const existingSize = buildSystem.getSize(existingKind);
+            if (checkAABBOverlap(newBuildingPos, newBuildingSize, building.cells[0], existingSize)) {
                 return false; // Overlap detected
             }
         }
-
-        // TODO: Add bounds check against playfield size
-
-        return true; // Placement is valid
+        return true;
     }
 };

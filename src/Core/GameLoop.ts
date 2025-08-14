@@ -4,28 +4,33 @@ import { aiSystem } from '../Systems/AISystem';
 import { weaponSystem } from '../Systems/WeaponSystem';
 import { projectileSystem } from '../Systems/ProjectileSystem';
 import { damageSystem } from '../Systems/DamageSystem';
+import { suppressionSystem } from '../Systems/SuppressionSystem';
+import { economySystem } from '../Systems/EconomySystem';
 
 /**
  * The main game loop tick function.
- * This function is called on every frame and is responsible for orchestrating the update of the game state.
- * It calls various systems, which compute changes, and then commits the new state to the store in a single batch.
- *
- * @param dt The delta time in seconds since the last frame.
  */
 export function tick(dt: number) {
   const state = useStore.getState();
 
   // Run systems to compute the next state
-  const { newProjectiles, updatedSoldiers, muzzleFlashPositions, ammoSpent } = weaponSystem.update(dt, state.soldiers, state.enemies, state.ammo);
-  const { updatedProjectiles, hits } = projectileSystem.update(dt, state.projectiles, state.enemies);
-  const enemiesAfterDamage = damageSystem.applyHits(state.enemies, hits);
-  const finalEnemies = aiSystem.update(dt, enemiesAfterDamage);
+  const { newProjectiles, updatedSoldiers, muzzleFlashPositions } = weaponSystem.update(dt, state.soldiers, state.enemies, state.ammo, state.terrain);
+  const { updatedProjectiles, hits, impacts } = projectileSystem.update(dt, state.projectiles, state.enemies);
+  const enemiesAfterDamage = damageSystem.applyHits(state.enemies, hits, state.terrain);
+  const enemiesAfterSuppression = suppressionSystem.update(dt, enemiesAfterDamage, updatedProjectiles);
+  const finalEnemies = aiSystem.update(dt, enemiesAfterSuppression, state.buildings);
   const newEnemies = waveSystem.update(dt);
 
   // Combine the results
   const allEnemies = [...finalEnemies, ...newEnemies];
   const allProjectiles = [...updatedProjectiles, ...newProjectiles];
   const newTime = state.time + dt;
+  const ammoSpent = newProjectiles.length;
+
+  // Process one dirty chunk per frame
+  state.actions.processDirtyChunk();
+
+  const income = economySystem.update(dt, state.buildings);
 
   // Batch update the state once at the end of the tick
   useStore.setState({
@@ -34,6 +39,9 @@ export function tick(dt: number) {
     enemies: allEnemies,
     projectiles: allProjectiles,
     muzzleFlashes: muzzleFlashPositions,
-    ammo: state.ammo - ammoSpent,
+    impactPuffs: impacts,
+    ammo: state.ammo - ammoSpent + income.ammo,
+    materials: state.materials + income.materials,
+    manpower: state.manpower + income.manpower,
   });
 }

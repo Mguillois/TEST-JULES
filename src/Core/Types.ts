@@ -34,6 +34,8 @@ export interface Soldier {
 export interface Enemy extends Omit<Soldier, 'team'> {
   pathId: string;
   state: 'Advance' | 'Pause' | 'Fire' | 'Retreat';
+  waypointIndex: number;
+  pauseTimer: number; // seconds remaining in pause
 }
 
 export interface Projectile {
@@ -49,7 +51,7 @@ export interface Projectile {
 
 export interface Buildable {
   id: string;
-  kind: 'Trench' | 'BarbedWire' | 'MGNest' | 'Bunker' | 'SniperNest' | 'Shelter';
+  kind: 'Trench' | 'BarbedWire' | 'MGNest' | 'Bunker' | 'SniperNest' | 'Shelter' | 'Depot' | 'Workshop' | 'Barracks';
   cells: Vec2[];         // grid cells occupied
   hp: number;
   level: 1 | 2 | 3;
@@ -59,7 +61,6 @@ export interface Economy {
   ammo: number;
   materials: number;
   manpower: number;
-  incomePerMinute: { ammo: number; materials: number; manpower: number };
 }
 
 export interface WaveSpec {
@@ -68,4 +69,14 @@ export interface WaveSpec {
   cadence: number;      // enemies per second
   composition: Array<{ type: 'rifle'|'assault'|'grenadier'; weight: number }>;
   pathVariantWeights: number[]; // lanes 0..N-1
+}
+
+export type TechId = string;
+
+export interface Tech {
+    id: TechId;
+    name: string;
+    description: string;
+    cost: { materials: number };
+    dependencies: TechId[];
 }

@@ -6,9 +6,10 @@ import { createUnitsSlice, UnitsSlice } from './slices/units';
 import { createBuildSlice, BuildSlice } from './slices/build';
 import { createPerfSlice, PerfSlice } from './slices/perf';
 import { createEconomySlice, EconomySlice } from './slices/economy';
+import { createResearchSlice, ResearchSlice } from './slices/research';
 
 // The combined state of all slices
-export type AppState = GameSlice & WorldSlice & UnitsSlice & BuildSlice & PerfSlice & EconomySlice;
+export type AppState = GameSlice & WorldSlice & UnitsSlice & BuildSlice & PerfSlice & EconomySlice & ResearchSlice;
 
 /**
  * The main Zustand store for the application.
@@ -24,6 +25,7 @@ export const useStore = create<AppState>()(
       ...createBuildSlice(...a),
       ...createPerfSlice(...a),
       ...createEconomySlice(...a),
+  ...createResearchSlice(...a),
     }),
     {
       name: 'trench-forge-save', // name of the item in the storage

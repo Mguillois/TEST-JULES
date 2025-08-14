@@ -13,7 +13,6 @@ export const createEconomySlice: StateCreator<EconomySlice, [], [], EconomySlice
   ammo: 2000,
   materials: 1000,
   manpower: 50,
-  incomePerMinute: { ammo: 100, materials: 50, manpower: 5 }, // Placeholder for M3
   actions: {
     spendAmmo: (amount) => set((state) => ({ ammo: Math.max(0, state.ammo - amount) })),
     spendMaterials: (amount) => set((state) => ({ materials: Math.max(0, state.materials - amount) })),

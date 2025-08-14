@@ -1,13 +1,28 @@
 import { WaveSpec, Enemy } from '../Core/Types';
 import { v4 as uuidv4 } from 'uuid';
+import { PATHS } from '../Core/paths';
 
-const M1_WAVE_1: WaveSpec = {
+// A more complex wave for Phase 2
+const M2_WAVE_1: WaveSpec = {
   index: 1,
-  spawnCount: 10,
-  cadence: 1, // 1 enemy per second
+  spawnCount: 20,
+  cadence: 2, // 2 enemies per second
   composition: [{ type: 'rifle', weight: 1 }],
-  pathVariantWeights: [1], // Only one path
+  pathVariantWeights: [0.3, 0.4, 0.3], // Weights for lane1, lane2, lane3
 };
+
+// Helper function to select an item based on weights
+function chooseWeightedRandom<T>(items: T[], weights: number[]): T {
+    const totalWeight = weights.reduce((acc, w) => acc + w, 0);
+    let random = Math.random() * totalWeight;
+    for (let i = 0; i < items.length; i++) {
+        if (random < weights[i]) {
+            return items[i];
+        }
+        random -= weights[i];
+    }
+    return items[items.length - 1]; // Fallback
+}
 
 class WaveSystem {
   private currentWave: WaveSpec | null = null;
@@ -16,8 +31,7 @@ class WaveSystem {
   private waveInProgress = false;
 
   private startNextWave() {
-    // For M1, we only have one wave.
-    this.currentWave = M1_WAVE_1;
+    this.currentWave = M2_WAVE_1;
     this.spawnTimer = 0;
     this.spawnedCount = 0;
     this.waveInProgress = true;
@@ -25,18 +39,13 @@ class WaveSystem {
   }
 
   public update(dt: number): Enemy[] {
-    if (!this.waveInProgress) {
-      // For now, start the first wave after a short delay.
-      // A more robust system would trigger this based on player action or a timer.
-      if (!this.currentWave) {
-          setTimeout(() => this.startNextWave(), 3000); // Wait 3s before starting
-          this.currentWave = { index: 0, spawnCount: 0, cadence: 0, composition: [], pathVariantWeights: [] }; // Dummy wave to prevent re-trigger
-      }
+    if (!this.waveInProgress && !this.currentWave) {
+      setTimeout(() => this.startNextWave(), 3000);
+      this.currentWave = { index: 0, spawnCount: 0, cadence: 0, composition: [], pathVariantWeights: [] }; // Dummy wave
       return [];
     }
 
-    if (!this.currentWave || this.spawnedCount >= this.currentWave.spawnCount) {
-      // Wave is over.
+    if (!this.currentWave || !this.waveInProgress || this.spawnedCount >= this.currentWave.spawnCount) {
       if (this.waveInProgress) {
           console.log(`Wave ${this.currentWave.index} complete.`);
           this.waveInProgress = false;
@@ -57,14 +66,19 @@ class WaveSystem {
   }
 
   private createEnemy(): Enemy {
-    const xPos = (Math.random() - 0.5) * 40; // Spawn in a random-ish X position in a 40m wide lane
-    const zPos = -40; // Start at the top of the 80m deep playfield
+    const pathIds = Object.keys(PATHS);
+    const weights = this.currentWave?.pathVariantWeights || pathIds.map(() => 1);
+    const chosenPathId = chooseWeightedRandom(pathIds, weights);
+
+    const startPos = PATHS[chosenPathId][0];
 
     return {
       id: uuidv4(),
-      pos: [xPos, zPos],
+      pos: [...startPos],
       state: 'Advance',
-      pathId: 'main',
+      pathId: chosenPathId,
+      waypointIndex: 1, // Start moving towards the second waypoint (index 1)
+      pauseTimer: 0,
       hp: 50,
       armor: 0,
       weapon: 'rifle',

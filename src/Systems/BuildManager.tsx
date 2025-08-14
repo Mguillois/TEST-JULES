@@ -4,80 +4,82 @@ import { useStore } from '../State/store';
 import { buildSystem } from '../Systems/BuildSystem';
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
+import { BuildMode } from '../State/slices/build';
 
-// This is the invisible plane that the mouse will intersect with to find the build position.
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const groundRaycaster = new THREE.Raycaster();
 
-/**
- * A controller component that manages the building workflow.
- * It handles keyboard input, mouse movement for ghost placement, and clicks to build.
- */
 function BuildManager() {
-  const { setBuildMode, setGhostState, addBuilding, buildMode, buildings, materials, spendMaterials } = useStore(state => ({
-    setBuildMode: state.actions.setBuildMode,
-    setGhostState: state.actions.setGhostState,
-    addBuilding: state.actions.addBuilding,
+  const { buildMode, buildings, materials, actions } = useStore(state => ({
     buildMode: state.buildMode,
     buildings: state.buildings,
     materials: state.materials,
-    spendMaterials: state.actions.spendMaterials,
+    actions: state.actions,
   }));
-  const { camera, scene } = useThree();
+  const { camera } = useThree();
 
-  // Effect for keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'b' || e.key === 'B') {
-        setBuildMode(buildMode === 'trench' ? 'none' : 'trench');
+      const keyMap: Record<string, BuildMode> = {
+        'b': 'trench',
+        'c': 'wire',
+        '5': 'depot',
+        '6': 'workshop',
+        '7': 'barracks',
+      };
+      const newMode = keyMap[e.key.toLowerCase()];
+      if (newMode) {
+        actions.setBuildMode(buildMode === newMode ? 'none' : newMode);
       }
       if (e.key === 'Escape') {
-        setBuildMode('none');
+        actions.setBuildMode('none');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [buildMode, setBuildMode]);
+  }, [buildMode, actions]);
 
   const handlePointerMove = (e: PointerEvent) => {
-    if (buildMode === 'none') {
-        setGhostState(null, false);
+    const currentBuildMode = useStore.getState().buildMode;
+    if (currentBuildMode === 'none') {
+        if (useStore.getState().ghostPosition !== null) actions.setGhostState(null, false);
         return;
     }
 
-    const pointer = new THREE.Vector2(
-        (e.clientX / window.innerWidth) * 2 - 1,
-        -(e.clientY / window.innerHeight) * 2 + 1
-    );
-
+    const pointer = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
     groundRaycaster.setFromCamera(pointer, camera);
     const intersection = new THREE.Vector3();
-    groundRaycaster.ray.intersectPlane(groundPlane, intersection);
-
-    // Snap to 1m grid
-    const snappedPos: [number, number] = [Math.round(intersection.x), Math.round(intersection.z)];
-    const isValid = buildSystem.validatePlacement(snappedPos, buildings);
-    setGhostState(snappedPos, isValid);
+    if (groundRaycaster.ray.intersectPlane(groundPlane, intersection)) {
+        const snappedPos: [number, number] = [Math.round(intersection.x), Math.round(intersection.z)];
+        const isValid = buildSystem.validatePlacement(snappedPos, currentBuildMode, useStore.getState().buildings);
+        actions.setGhostState(snappedPos, isValid);
+    }
   };
 
   const handlePointerDown = () => {
+      const { buildMode, ghostPosition, isGhostPlacementValid, materials, actions } = useStore.getState();
+      if (buildMode === 'none' || !isGhostPlacementValid || !ghostPosition) return;
+
+      const cost = buildSystem.getCost(buildMode);
+      if (materials < cost) return;
+
       if (buildMode === 'trench') {
-          const { ghostPosition, isGhostPlacementValid } = useStore.getState();
-          const cost = buildSystem.getCost('trench');
-          if (isGhostPlacementValid && ghostPosition && materials >= cost) {
-              addBuilding({
-                  id: uuidv4(),
-                  kind: 'Trench',
-                  cells: [ghostPosition],
-                  hp: 500,
-                  level: 1,
-              });
-              spendMaterials(cost);
-          }
+          actions.digTrench(ghostPosition, buildSystem.getSize('trench'));
+          actions.spendMaterials(cost);
+      } else {
+          // Handle all other buildable objects
+          const kind = (buildMode.charAt(0).toUpperCase() + buildMode.slice(1)) as 'BarbedWire' | 'Depot' | 'Workshop' | 'Barracks';
+          actions.addBuilding({
+              id: uuidv4(),
+              kind: kind,
+              cells: [ghostPosition],
+              hp: 100, // Placeholder HP
+              level: 1,
+          });
+          actions.spendMaterials(cost);
       }
   };
 
-  // Add event listeners to the canvas
   const gl = useThree(state => state.gl);
   useEffect(() => {
     const canvas = gl.domElement;
@@ -87,7 +89,7 @@ function BuildManager() {
       canvas.removeEventListener('pointermove', handlePointerMove);
       canvas.removeEventListener('pointerdown', handlePointerDown);
     };
-  }, [gl, buildMode, buildings, materials]); // Re-bind if state affecting callbacks changes
+  }, [gl, buildMode]);
 
   return null;
 }
