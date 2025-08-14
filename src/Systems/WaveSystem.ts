@@ -1,17 +1,18 @@
-import { WaveSpec, Enemy } from '../Core/Types';
+import { WaveSpec, Enemy, SoldierClassId } from '../Core/Types';
 import { v4 as uuidv4 } from 'uuid';
 import { PATHS } from '../Core/paths';
 
-// A more complex wave for Phase 2
-const M2_WAVE_1: WaveSpec = {
-  index: 1,
-  spawnCount: 20,
-  cadence: 2, // 2 enemies per second
-  composition: [{ type: 'rifle', weight: 1 }],
-  pathVariantWeights: [0.3, 0.4, 0.3], // Weights for lane1, lane2, lane3
+const M3_WAVE_1: WaveSpec = {
+  index: 2,
+  spawnCount: 25,
+  cadence: 1.5,
+  composition: [
+      { type: 'rifle', weight: 0.8 },
+      { type: 'sapper', weight: 0.2 },
+    ],
+  pathVariantWeights: [0.3, 0.4, 0.3],
 };
 
-// Helper function to select an item based on weights
 function chooseWeightedRandom<T>(items: T[], weights: number[]): T {
     const totalWeight = weights.reduce((acc, w) => acc + w, 0);
     let random = Math.random() * totalWeight;
@@ -21,7 +22,7 @@ function chooseWeightedRandom<T>(items: T[], weights: number[]): T {
         }
         random -= weights[i];
     }
-    return items[items.length - 1]; // Fallback
+    return items[items.length - 1];
 }
 
 class WaveSystem {
@@ -31,7 +32,7 @@ class WaveSystem {
   private waveInProgress = false;
 
   private startNextWave() {
-    this.currentWave = M2_WAVE_1;
+    this.currentWave = M3_WAVE_1; // Use the new wave spec
     this.spawnTimer = 0;
     this.spawnedCount = 0;
     this.waveInProgress = true;
@@ -40,8 +41,8 @@ class WaveSystem {
 
   public update(dt: number): Enemy[] {
     if (!this.waveInProgress && !this.currentWave) {
-      setTimeout(() => this.startNextWave(), 3000);
-      this.currentWave = { index: 0, spawnCount: 0, cadence: 0, composition: [], pathVariantWeights: [] }; // Dummy wave
+      setTimeout(() => this.startNextWave(), 5000); // Start after 5s
+      this.currentWave = { index: 0, spawnCount: 0, cadence: 0, composition: [], pathVariantWeights: [] };
       return [];
     }
 
@@ -66,9 +67,13 @@ class WaveSystem {
   }
 
   private createEnemy(): Enemy {
+    const compositionTypes = this.currentWave!.composition.map(c => c.type);
+    const compositionWeights = this.currentWave!.composition.map(c => c.weight);
+    const chosenType = chooseWeightedRandom(compositionTypes, compositionWeights);
+
     const pathIds = Object.keys(PATHS);
-    const weights = this.currentWave?.pathVariantWeights || pathIds.map(() => 1);
-    const chosenPathId = chooseWeightedRandom(pathIds, weights);
+    const pathWeights = this.currentWave?.pathVariantWeights || pathIds.map(() => 1);
+    const chosenPathId = chooseWeightedRandom(pathIds, pathWeights);
 
     const startPos = PATHS[chosenPathId][0];
 
@@ -77,16 +82,16 @@ class WaveSystem {
       pos: [...startPos],
       state: 'Advance',
       pathId: chosenPathId,
-      waypointIndex: 1, // Start moving towards the second waypoint (index 1)
+      waypointIndex: 1,
       pauseTimer: 0,
-      hp: 50,
-      armor: 0,
-      weapon: 'rifle',
-      classId: 'rifleman',
+      hp: chosenType === 'sapper' ? 65 : 50, // Sappers are tougher, but not tanks
+      armor: chosenType === 'sapper' ? 0.1 : 0,
+      weapon: 'rifle', // Sappers might not have a weapon, but the type requires it
+      classId: chosenType as any, // The type system needs alignment here
       fireCooldown: 0,
       aimSpread: 0.2,
       suppressed: 0,
-      xp: 5,
+      xp: chosenType === 'sapper' ? 10 : 5,
     };
   }
 }

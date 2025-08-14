@@ -2,10 +2,10 @@ import * as THREE from 'three';
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore } from '../../State/store';
-import { Vec2 } from '../../Core/Types';
+import { Vec3 } from '../../Core/Types';
 
 const MAX_PUFFS = 500;
-const puffSelector = (state: { impactPuffs: Vec2[] }) => state.impactPuffs;
+const puffSelector = (state: { impactPuffs: Vec3[] }) => state.impactPuffs;
 
 const dummy = new THREE.Object3D();
 
@@ -26,7 +26,7 @@ function ImpactPuff() {
     for (const puffPos of puffs) {
       if (count >= MAX_PUFFS) break;
 
-      dummy.position.set(puffPos[0], 0.1, puffPos[1]);
+      dummy.position.set(...puffPos);
 
       const scale = 0.2 + Math.random() * 0.3;
       dummy.scale.set(scale, scale, scale);

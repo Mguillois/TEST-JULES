@@ -4,6 +4,7 @@ import BarbedWire from './BarbedWire';
 import Depot from './Depot';
 import Workshop from './Workshop';
 import Barracks from './Barracks';
+import MortarPit from './MortarPit';
 
 const buildingsSelector = (state: AppState) => state.buildings;
 
@@ -25,6 +26,8 @@ function BuildablesGroup() {
             return <Workshop key={building.id} building={building} />;
           case 'Barracks':
             return <Barracks key={building.id} building={building} />;
+          case 'MortarPit':
+            return <MortarPit key={building.id} building={building} />;
           default:
             return null;
         }

@@ -4,10 +4,10 @@ export const WEAPON_DATA: Record<WeaponSpecId, WeaponSpec> = {
   rifle: {
     id: 'rifle',
     name: 'Standard Rifle',
-    roundsPerMinute: 40, // A more realistic sustained fire rate
-    muzzleSpeed: 760,    // m/s
-    damage: 10,
-    dispersionSigma: 0.015, // radians, ~0.85 degrees
+    roundsPerMinute: 60,
+    muzzleSpeed: 760,
+    damage: 15,
+    dispersionSigma: 0.015,
     tracerRatio: 5,         // 1 in 5 rounds is a tracer
   },
 };
@@ -15,9 +15,9 @@ export const WEAPON_DATA: Record<WeaponSpecId, WeaponSpec> = {
 import { Tech, TechId } from './Types';
 
 export const BUILDING_INCOME: Record<string, { ammo?: number, materials?: number, manpower?: number }> = {
-    'Depot': { ammo: 10 },
-    'Workshop': { materials: 5 },
-    'Barracks': { manpower: 1 },
+    'Depot': { ammo: 60 },
+    'Workshop': { materials: 30 },
+    'Barracks': { manpower: 5 },
 };
 
 export const TECH_TREE: Record<TechId, Tech> = {

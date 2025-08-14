@@ -1,4 +1,4 @@
-import { Soldier, Enemy, Projectile, Vec2 } from '../Core/Types';
+import { Soldier, Enemy, Projectile, Vec2, Vec3 } from '../Core/Types';
 import { WEAPON_DATA } from '../Core/data';
 import { randomNormal } from '../Core/Utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,14 +18,12 @@ class WeaponSystem {
   ): { newProjectiles: Projectile[]; updatedSoldiers: Soldier[]; muzzleFlashPositions: Vec2[] } {
     const newProjectiles: Projectile[] = [];
     const muzzleFlashPositions: Vec2[] = [];
-    let ammoSpent = 0; // This should be returned, but the GameLoop isn't using it yet. Let's fix that.
 
     const updatedSoldiers = soldiers.map(soldier => {
       const newCooldown = soldier.fireCooldown - dt;
 
-      if (newCooldown <= 0 && enemies.length > 0 && (currentAmmo - ammoSpent) > 0) {
+      if (newCooldown <= 0 && enemies.length > 0 && currentAmmo > 0) {
         const target = this.findClosestEnemy(soldier, enemies);
-
         if (target) {
           const weaponSpec = WEAPON_DATA[soldier.weapon];
           if (!weaponSpec) return { ...soldier, fireCooldown: 0 };
@@ -48,8 +46,6 @@ class WeaponSystem {
       return { ...soldier, fireCooldown: newCooldown > 0 ? newCooldown : 0 };
     });
 
-    // The ammo logic was flawed. Weapon system should not track ammo spent.
-    // It should just fire if ammo > 0. The GameLoop will decrement ammo per projectile created.
     return { newProjectiles, updatedSoldiers, muzzleFlashPositions };
   }
 
@@ -71,15 +67,21 @@ class WeaponSystem {
 
   private createProjectile(soldier: Soldier, target: Enemy): Projectile {
     const weaponSpec = WEAPON_DATA[soldier.weapon];
-    const direction: Vec2 = [target.pos[0] - soldier.pos[0], target.pos[1] - soldier.pos[1]];
-    const distance = Math.sqrt(direction[0]**2 + direction[1]**2);
+    const origin: Vec3 = [soldier.pos[0], 0.8, soldier.pos[1]]; // Start projectile from barrel height
+    const targetPos: Vec3 = [target.pos[0], 0.5, target.pos[1]]; // Aim for center mass
+
+    const direction: Vec3 = [targetPos[0] - origin[0], 0, targetPos[2] - origin[2]]; // Flat trajectory for now
+    const distance = Math.sqrt(direction[0]**2 + direction[2]**2);
     if (distance === 0) return null as unknown as Projectile;
-    const normalizedDir: Vec2 = [direction[0] / distance, direction[1] / distance];
+
+    const normalizedDir: Vec2 = [direction[0] / distance, direction[2] / distance];
     const angle = Math.atan2(normalizedDir[1], normalizedDir[0]);
     const dispersedAngle = randomNormal(angle, weaponSpec.dispersionSigma);
+
     const finalDir: Vec2 = [Math.cos(dispersedAngle), Math.sin(dispersedAngle)];
-    const vel: Vec2 = [finalDir[0] * weaponSpec.muzzleSpeed, finalDir[1] * weaponSpec.muzzleSpeed];
-    return { id: uuidv4(), fromId: soldier.id, origin: [...soldier.pos], pos: [...soldier.pos], vel: vel, life: 5, damage: weaponSpec.damage, tracer: Math.random() * weaponSpec.tracerRatio < 1 };
+    const vel: Vec3 = [finalDir[0] * weaponSpec.muzzleSpeed, 0, finalDir[1] * weaponSpec.muzzleSpeed];
+
+    return { id: uuidv4(), fromId: soldier.id, origin: origin, pos: [...origin], vel: vel, life: 5, damage: weaponSpec.damage, tracer: Math.random() * weaponSpec.tracerRatio < 1 };
   }
 }
 

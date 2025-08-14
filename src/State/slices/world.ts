@@ -4,11 +4,13 @@ import { Vec2 } from '../../Core/Types';
 export interface WorldSlice {
   dimensions: Vec2;
   terrain: number[][];
+  isRaining: boolean;
   dirtyChunks: string[]; // Array of chunk keys, e.g., "x-z"
   chunkVersions: Record<string, number>; // Map from chunk key to version number
   actions: {
     digTrench: (center: Vec2, size: Vec2) => void;
     processDirtyChunk: () => void;
+    setWeather: (isRaining: boolean) => void;
   };
 }
 
@@ -21,9 +23,11 @@ const initialTerrain: number[][] = Array(WORLD_WIDTH).fill(0).map(() => Array(WO
 export const createWorldSlice: StateCreator<WorldSlice, [], [], WorldSlice> = (set, get) => ({
   dimensions: [WORLD_WIDTH, WORLD_DEPTH],
   terrain: initialTerrain,
+  isRaining: false,
   dirtyChunks: [],
   chunkVersions: {},
   actions: {
+    setWeather: (isRaining) => set({ isRaining }),
     digTrench: (center, size) => {
       const { terrain } = get();
       const newTerrain = terrain.map(arr => arr.slice()); // Deep copy

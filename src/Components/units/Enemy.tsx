@@ -1,23 +1,34 @@
+import * as THREE from 'three';
 import { Enemy as EnemyType } from '../../Core/Types';
 
 interface EnemyProps {
   enemy: EnemyType;
 }
 
+const bodyMaterial = new THREE.MeshStandardMaterial({ color: '#B22222' }); // Firebrick Red
+const rifleMaterial = new THREE.MeshStandardMaterial({ color: '#5C4033' }); // Dark brown
+
 /**
- * Renders a single enemy unit.
- * For now, it's a simple cylinder mesh.
+ * Renders a single enemy unit with a procedural model.
  */
 function Enemy({ enemy }: EnemyProps) {
-  // The enemy's position is a Vec2 [x, z]. In 3D, this corresponds to [x, y, z].
-  // We place the cylinder's base on the ground (y=0), so its center is at y=0.5.
-  const position: [number, number, number] = [enemy.pos[0], 0.5, enemy.pos[1]];
+  const position: [number, number, number] = [enemy.pos[0], 0, enemy.pos[1]];
 
   return (
-    <mesh position={position} castShadow>
-      <cylinderGeometry args={[0.4, 0.4, 1, 8]} />
-      <meshStandardMaterial color="#B22222" /> {/* Firebrick Red */}
-    </mesh>
+    <group position={position}>
+        {/* Body */}
+        <mesh castShadow position={[0, 0.4, 0]} material={bodyMaterial}>
+            <capsuleGeometry args={[0.3, 0.5, 4, 8]} />
+        </mesh>
+        {/* Head */}
+        <mesh castShadow position={[0, 1.1, 0]} material={bodyMaterial}>
+            <sphereGeometry args={[0.2, 16, 16]} />
+        </mesh>
+        {/* Rifle */}
+        <mesh castShadow position={[0, 0.7, 0.3]} material={rifleMaterial}>
+            <boxGeometry args={[0.1, 0.1, 0.8]} />
+        </mesh>
+    </group>
   );
 }
 

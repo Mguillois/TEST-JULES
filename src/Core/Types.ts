@@ -1,77 +1,83 @@
 // Data model (TypeScript)
 
 export type Vec2 = [number, number];
+export type Vec3 = [number, number, number];
 export type Team = 'Player' | 'Enemy';
 
-// These are placeholders for IDs, allowing for more type-safe code.
+// IDs
 export type WeaponSpecId = string;
-export type SoldierClassId = string;
+export type SoldierClassId = 'rifleman' | 'medic' | 'engineer';
+export type TechId = string;
 
 export interface WeaponSpec {
-  id: WeaponSpecId;
-  name: string;
-  roundsPerMinute: number;
-  muzzleSpeed: number; // m/s
-  damage: number;
-  dispersionSigma: number; // radians
-  tracerRatio: number; // e.g., 4 means 1 in 4 shots is a tracer
+    id: WeaponSpecId;
+    name: string;
+    roundsPerMinute: number;
+    muzzleSpeed: number; // m/s
+    damage: number;
+    dispersionSigma: number; // radians
+    tracerRatio: number; // e.g., 4 means 1 in 4 shots is a tracer
 }
 
 export interface Soldier {
-  id: string;
-  team: Team;
-  pos: Vec2;             // metres
-  hp: number;            // hit points
-  armor: number;         // 0..1 damage reduction
-  weapon: WeaponSpecId;
-  classId: SoldierClassId;
-  fireCooldown: number;  // seconds remaining
-  aimSpread: number;     // radians 1-sigma
-  suppressed: number;    // 0..1
-  xp: number;            // experience points
+    id: string;
+    team: Team;
+    pos: Vec2;
+    hp: number;
+    armor: number;
+    weapon: WeaponSpecId;
+    classId: SoldierClassId;
+    fireCooldown: number;
+    actionCooldown: number;
+    aimSpread: number;
+    suppressed: number;
+    xp: number;
+    moveTarget: Vec2 | null;
 }
 
-export interface Enemy extends Omit<Soldier, 'team'> {
-  pathId: string;
-  state: 'Advance' | 'Pause' | 'Fire' | 'Retreat';
-  waypointIndex: number;
-  pauseTimer: number; // seconds remaining in pause
+export interface Enemy extends Omit<Soldier, 'team' | 'actionCooldown'> {
+    pathId: string;
+    state: 'Advance' | 'Pause' | 'Fire' | 'Retreat' | 'Attacking';
+    waypointIndex: number;
+    pauseTimer: number;
 }
 
 export interface Projectile {
-  id: string;
-  fromId: string;
-  origin: Vec2;
-  pos: Vec2;             // current position in metres
-  vel: Vec2;             // m s^-1
-  life: number;          // seconds remaining
-  damage: number;
-  tracer: boolean;
+    id: string;
+    fromId: string;
+    origin: Vec3;
+    pos: Vec3;
+    vel: Vec3;
+    life: number;
+    damage: number;
+    tracer: boolean;
+    explosion?: {
+        radius: number;
+        damage: number;
+    };
 }
 
 export interface Buildable {
-  id: string;
-  kind: 'Trench' | 'BarbedWire' | 'MGNest' | 'Bunker' | 'SniperNest' | 'Shelter' | 'Depot' | 'Workshop' | 'Barracks';
-  cells: Vec2[];         // grid cells occupied
-  hp: number;
-  level: 1 | 2 | 3;
+    id: string;
+    kind: 'Trench' | 'BarbedWire' | 'MGNest' | 'Bunker' | 'SniperNest' | 'Shelter' | 'Depot' | 'Workshop' | 'Barracks' | 'MortarPit';
+    cells: Vec2[];
+    hp: number;
+    level: 1 | 2 | 3;
 }
 
 export interface Economy {
-  ammo: number;
-  materials: number;
-  manpower: number;
+    ammo: number;
+    materials: number;
+    manpower: number;
 }
 
 export interface WaveSpec {
-  index: number;
-  spawnCount: number;
-  cadence: number;      // enemies per second
-  composition: Array<{ type: 'rifle'|'assault'|'grenadier'; weight: number }>;
-  pathVariantWeights: number[]; // lanes 0..N-1
+    index: number;
+    spawnCount: number;
+    cadence: number;
+    composition: Array<{ type: 'rifle' | 'assault' | 'grenadier' | 'sapper'; weight: number }>;
+    pathVariantWeights: number[];
 }
-
-export type TechId = string;
 
 export interface Tech {
     id: TechId;
