@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { OrbitControls } from '@react-three/drei';
 import GameManager from '../Core/GameManager';
 import SoldierGroup from '../Components/units/SoldierGroup';
@@ -9,6 +10,7 @@ import BuildManager from '../Systems/BuildManager';
 import GhostPreview from '../Components/buildables/GhostPreview';
 import BuildablesGroup from '../Components/buildables/BuildablesGroup';
 import VoxelTerrain from '../Components/terrain/VoxelTerrain';
+import SmokeEmitter from '../Components/effects/SmokeEmitter';
 
 /**
  * The main 3D scene graph.
@@ -23,6 +25,9 @@ function Scene() {
 
       {/* Environment */}
       <fog attach="fog" args={['#5B5D5A', 50, 150]} />
+      <SmokeEmitter position={new THREE.Vector3(0, 0, -20)} />
+      <SmokeEmitter position={new THREE.Vector3(-30, 0, -10)} />
+      <SmokeEmitter position={new THREE.Vector3(30, 0, 0)} />
       <ambientLight intensity={0.5} />
       <directionalLight
         castShadow
