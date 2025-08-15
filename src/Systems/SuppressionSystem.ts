@@ -8,7 +8,7 @@ const distSq = (a: Vec3, b: Vec2) => (a[0] - b[0])**2 + (a[1] - 0.5)**2 + (a[2] 
 
 class SuppressionSystem {
   public update(dt: number, enemies: Enemy[], projectiles: Projectile[]): Enemy[] {
-    if (projectiles.length === 0 && enemies.every(e => e.suppression === 0)) {
+    if (projectiles.length === 0 && enemies.every(e => e.suppressed === 0)) {
       return enemies;
     }
 
@@ -27,12 +27,12 @@ class SuppressionSystem {
     return enemies.map(enemy => {
       const suppressionGained = suppressionDeltas.get(enemy.id) || 0;
       const decay = SUPPRESSION_DECAY_RATE * dt;
-      const newSuppression = Math.max(0, Math.min(1, enemy.suppression + suppressionGained - decay));
+      const newSuppression = Math.max(0, Math.min(1, enemy.suppressed + suppressionGained - decay));
 
       if (newSuppression < 0.01) {
-        return { ...enemy, suppression: 0 };
+        return { ...enemy, suppressed: 0 };
       }
-      return { ...enemy, suppression: newSuppression };
+      return { ...enemy, suppressed: newSuppression };
     });
   }
 }

@@ -46,7 +46,7 @@ class AISystem {
     if (isSlowedByWire) speed *= 0.4;
     if (isRaining) speed *= MUD_SLOWDOWN_FACTOR;
 
-    const suppressionFactor = 1 - (enemy.suppression * 0.75);
+    const suppressionFactor = 1 - (enemy.suppressed * 0.75);
     const finalSpeed = speed * suppressionFactor;
 
     if (enemy.state === 'Advance') return this.advanceOnPath(dt, enemy, path, finalSpeed);
@@ -87,7 +87,7 @@ class AISystem {
   private advanceToTarget(dt: number, enemy: Enemy, targetPos: Vec2, isRaining: boolean): Enemy {
       let speed = BASE_ADVANCE_SPEED;
       if (isRaining) speed *= MUD_SLOWDOWN_FACTOR;
-      const suppressionFactor = 1 - (enemy.suppression * 0.75);
+      const suppressionFactor = 1 - (enemy.suppressed * 0.75);
       speed *= suppressionFactor;
 
       const direction: Vec2 = [targetPos[0] - enemy.pos[0], targetPos[1] - enemy.pos[1]];
