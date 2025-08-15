@@ -16,12 +16,12 @@ const terrainMaterial = new THREE.MeshStandardMaterial({
 function TerrainChunk({ chunkX, chunkZ, version }: { chunkX: number, chunkZ: number, version: number }) {
   const geometry = useMemo(() => {
     console.log(`Rebuilding chunk ${chunkX}-${chunkZ} version ${version}`);
-    // We get the latest terrain data directly from the store inside useMemo.
-    // This ensures the memo only re-runs when the chunk's version changes,
-    // but always uses the most up-to-date terrain map for the rebuild.
+    // This is the crucial fix: we get the terrain data inside the memoized function.
+    // This means the component does not re-render when the terrain data object changes,
+    // only when the primitive `version` number prop changes.
     const terrainData = useStore.getState().terrain;
     return voxelSystem.generateChunkGeometry(chunkX, chunkZ, terrainData);
-  }, [chunkX, chunkZ, version]);
+  }, [chunkX, chunkZ, version]); // The dependency array is now correct.
 
   return <mesh geometry={geometry} material={terrainMaterial} receiveShadow />;
 }
