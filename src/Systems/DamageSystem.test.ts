@@ -7,7 +7,7 @@ describe('damageSystem', () => {
   describe('applyHits', () => {
     const mockEnemy: Omit<Enemy, 'id' | 'hp' | 'armor'> = {
       pos: [0, 0], weapon: 'rifle', classId: 'rifleman',
-      fireCooldown: 0, suppressed: 0, xp: 0,
+      fireCooldown: 0, suppressed: 0, xp: 0, aimSpread: 0.1,
       pathId: 'p1', state: 'Advance', waypointIndex: 0, pauseTimer: 0, moveTarget: null
     };
 

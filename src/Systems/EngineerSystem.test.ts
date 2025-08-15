@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { engineerSystem } from './EngineerSystem';
-import { Soldier, Buildable } from '../Core/Types';
+import type { Soldier, Buildable } from '../Core/Types';
 
 const mockSoldier: Omit<Soldier, 'id' | 'hp' | 'classId' | 'pos'> = {
     team: 'Player', armor: 0, weapon: 'rifle',

@@ -1,5 +1,6 @@
 import { useStore } from '../State/store';
 import type { AppState } from '../State/store';
+import { shallow } from 'zustand/shallow';
 
 // Selector to get only the needed state for the HUD
 const hudSelector = (state: AppState) => ({
@@ -13,10 +14,9 @@ const hudSelector = (state: AppState) => ({
 
 /**
  * The main Heads-Up Display for the game.
- * It shows critical information like wave, time, resources, and FPS.
  */
 function HUD() {
-  const { wave, time, ammo, materials, manpower, toggleResearchPanel } = useStore(hudSelector);
+  const { wave, time, ammo, materials, manpower, toggleResearchPanel } = useStore(hudSelector, shallow);
 
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
@@ -37,7 +37,7 @@ function HUD() {
     display: 'flex',
     justifyContent: 'space-around',
     alignItems: 'center',
-    zIndex: 1, // Ensure it's on top of the canvas
+    zIndex: 1,
   };
 
   const buttonStyle: React.CSSProperties = {

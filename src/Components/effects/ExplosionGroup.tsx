@@ -1,6 +1,7 @@
 import { useStore } from '../../State/store';
 import { useState, useEffect } from 'react';
 import Explosion from './Explosion';
+import { shallow } from 'zustand/shallow';
 import type { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -10,7 +11,7 @@ interface KeyedExplosion extends ExplosionType {
 }
 
 function ExplosionGroup() {
-  const newExplosions = useStore(state => state.explosions);
+  const newExplosions = useStore(state => state.explosions, shallow);
   const [activeExplosions, setActiveExplosions] = useState<KeyedExplosion[]>([]);
 
   useEffect(() => {

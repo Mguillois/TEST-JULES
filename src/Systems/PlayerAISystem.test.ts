@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { playerAISystem } from './PlayerAISystem';
-import { Soldier } from '../Core/Types';
+import type { Soldier } from '../Core/Types';
 
 const mockSoldier: Omit<Soldier, 'id' | 'pos' | 'moveTarget'> = {
     team: 'Player', hp: 100, armor: 0, weapon: 'rifle', classId: 'rifleman',

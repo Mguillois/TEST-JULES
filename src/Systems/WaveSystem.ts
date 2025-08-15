@@ -47,7 +47,7 @@ class WaveSystem {
     }
 
     if (!this.currentWave || !this.waveInProgress || this.spawnedCount >= this.currentWave.spawnCount) {
-      if (this.waveInProgress) {
+      if (this.waveInProgress && this.currentWave) {
           console.log(`Wave ${this.currentWave.index} complete.`);
           this.waveInProgress = false;
       }

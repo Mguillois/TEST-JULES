@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
 import type { BuildMode } from '../State/slices/build';
 import type { Soldier, SoldierClassId } from '../Core/Types';
+import { shallow } from 'zustand/shallow';
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const groundRaycaster = new THREE.Raycaster();
@@ -16,7 +17,7 @@ function InputManager() {
     buildMode: state.buildMode,
     targetingMode: state.targetingMode,
     actions: state.actions,
-  }));
+  }), shallow);
   const { camera } = useThree();
 
   const createNewSoldier = (classId: SoldierClassId): Soldier => {
@@ -60,7 +61,7 @@ function InputManager() {
 
   const handlePointerMove = (e: PointerEvent) => {
     const { buildMode, targetingMode } = useStore.getState();
-    if (buildMode === 'none' && !targetingMode.active) {
+    if (buildMode === 'none' || buildMode.startsWith('recruit') || !targetingMode.active) {
         if (useStore.getState().ghostPosition !== null) actions.setGhostState(null, false);
         return;
     }

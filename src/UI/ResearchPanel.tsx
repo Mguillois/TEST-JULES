@@ -1,6 +1,7 @@
 import { useStore } from '../State/store';
 import { TECH_TREE } from '../Core/data';
 import type { Tech } from '../Core/Types';
+import { shallow } from 'zustand/shallow';
 
 const panelStyle: React.CSSProperties = {
     position: 'absolute',
@@ -40,7 +41,7 @@ function ResearchPanel() {
         materials: state.materials,
         actions: state.actions,
         closePanel: state.actions.toggleResearchPanel,
-    }));
+    }), shallow);
 
     const handleUnlock = (tech: Tech) => {
         if (materials >= tech.cost.materials) {

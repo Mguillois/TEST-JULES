@@ -35,7 +35,20 @@ export interface Soldier {
     moveTarget: Vec2 | null;
 }
 
-export interface Enemy extends Omit<Soldier, 'team' | 'actionCooldown'> {
+// Explicitly define Enemy to avoid Omit issues
+export interface Enemy {
+    id: string;
+    pos: Vec2;
+    hp: number;
+    armor: number;
+    weapon: WeaponSpecId;
+    classId: SoldierClassId;
+    fireCooldown: number;
+    aimSpread: number;
+    suppressed: number;
+    xp: number;
+    moveTarget: Vec2 | null;
+    // Enemy-specific properties
     pathId: string;
     state: 'Advance' | 'Pause' | 'Fire' | 'Retreat' | 'Attacking';
     waypointIndex: number;
