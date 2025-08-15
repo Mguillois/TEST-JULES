@@ -1,7 +1,6 @@
 import { useStore } from '../State/store';
 import { TECH_TREE } from '../Core/data';
 import type { Tech } from '../Core/Types';
-import { shallow } from 'zustand/shallow';
 
 const panelStyle: React.CSSProperties = {
     position: 'absolute',
@@ -36,12 +35,9 @@ const TechItem = ({ tech, isUnlocked, canUnlock, onUnlock }: { tech: Tech, isUnl
 };
 
 function ResearchPanel() {
-    const { unlockedTechIds, materials, actions, closePanel } = useStore(state => ({
-        unlockedTechIds: state.unlockedTechIds,
-        materials: state.materials,
-        actions: state.actions,
-        closePanel: state.actions.toggleResearchPanel,
-    }), shallow);
+    const unlockedTechIds = useStore(state => state.unlockedTechIds);
+    const materials = useStore(state => state.materials);
+    const actions = useStore(state => state.actions);
 
     const handleUnlock = (tech: Tech) => {
         if (materials >= tech.cost.materials) {
@@ -56,7 +52,7 @@ function ResearchPanel() {
         <div style={panelStyle}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>Research & Development</h2>
-                <button onClick={closePanel}>X</button>
+                <button onClick={actions.toggleResearchPanel}>X</button>
             </div>
             <div>
                 {Object.values(TECH_TREE).map(tech => {

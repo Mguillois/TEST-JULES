@@ -1,16 +1,16 @@
 import { useStore } from '../../State/store';
 import { useState, useEffect } from 'react';
 import Explosion from './Explosion';
-import { shallow } from 'zustand/shallow';
 import type { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
 import { v4 as uuidv4 } from 'uuid';
+import { shallow } from 'zustand/shallow';
 
-// We need to give each explosion a unique key for React to render it correctly.
 interface KeyedExplosion extends ExplosionType {
   key: string;
 }
 
 function ExplosionGroup() {
+  // Subscribing to an array can cause re-renders. `shallow` helps here.
   const newExplosions = useStore(state => state.explosions, shallow);
   const [activeExplosions, setActiveExplosions] = useState<KeyedExplosion[]>([]);
 
@@ -21,10 +21,6 @@ function ExplosionGroup() {
     }
   }, [newExplosions]);
 
-  // This is a simple way to manage the list. A more robust system might
-  // have the Explosion component report when it's done, but for a short-lived
-  // effect, just letting them accumulate and relying on their internal visibility
-  // logic is acceptable for now. A production system would pool these.
   return (
     <group name="explosions">
       {activeExplosions.map((explosion) => (

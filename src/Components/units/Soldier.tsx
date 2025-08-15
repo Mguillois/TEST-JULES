@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import type { Soldier as SoldierType } from '../../Core/Types';
 import { useStore } from '../../State/store';
 import { Ring } from '@react-three/drei';
-import { shallow } from 'zustand/shallow';
 
 interface SoldierProps {
   soldier: SoldierType;
@@ -17,10 +16,8 @@ const COLORS = {
 const rifleMaterial = new THREE.MeshStandardMaterial({ color: '#5C4033' });
 
 function Soldier({ soldier }: SoldierProps) {
-  const { selectedSoldierId, selectSoldier } = useStore(state => ({
-    selectedSoldierId: state.selectedSoldierId,
-    selectSoldier: state.actions.selectSoldier,
-  }), shallow);
+  const selectedSoldierId = useStore(state => state.selectedSoldierId);
+  const selectSoldier = useStore(state => state.actions.selectSoldier);
 
   const position: [number, number, number] = [soldier.pos[0], 0, soldier.pos[1]];
   const color = COLORS[soldier.classId] || COLORS.rifleman;

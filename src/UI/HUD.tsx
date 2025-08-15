@@ -1,22 +1,15 @@
 import { useStore } from '../State/store';
-import type { AppState } from '../State/store';
-import { shallow } from 'zustand/shallow';
-
-// Selector to get only the needed state for the HUD
-const hudSelector = (state: AppState) => ({
-  wave: state.wave,
-  time: state.time,
-  ammo: state.ammo,
-  materials: state.materials,
-  manpower: state.manpower,
-  toggleResearchPanel: state.actions.toggleResearchPanel,
-});
 
 /**
  * The main Heads-Up Display for the game.
  */
 function HUD() {
-  const { wave, time, ammo, materials, manpower, toggleResearchPanel } = useStore(hudSelector, shallow);
+  const wave = useStore(state => state.wave);
+  const time = useStore(state => state.time);
+  const ammo = useStore(state => state.ammo);
+  const materials = useStore(state => state.materials);
+  const manpower = useStore(state => state.manpower);
+  const toggleResearchPanel = useStore(state => state.actions.toggleResearchPanel);
 
   const handleReset = () => {
     if (window.confirm('Are you sure you want to reset all progress? This cannot be undone.')) {

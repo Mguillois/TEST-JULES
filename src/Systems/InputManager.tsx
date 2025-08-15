@@ -7,17 +7,17 @@ import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
 import type { BuildMode } from '../State/slices/build';
 import type { Soldier, SoldierClassId } from '../Core/Types';
-import { shallow } from 'zustand/shallow';
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const groundRaycaster = new THREE.Raycaster();
 
 function InputManager() {
-  const { buildMode, targetingMode, actions } = useStore(state => ({
-    buildMode: state.buildMode,
-    targetingMode: state.targetingMode,
-    actions: state.actions,
-  }), shallow);
+  // We only need to subscribe to the values that affect the component's logic,
+  // primarily for the useEffect dependency array.
+  const buildMode = useStore(state => state.buildMode);
+  const targetingMode = useStore(state => state.targetingMode);
+  const actions = useStore(state => state.actions);
+
   const { camera } = useThree();
 
   const createNewSoldier = (classId: SoldierClassId): Soldier => {
@@ -61,7 +61,7 @@ function InputManager() {
 
   const handlePointerMove = (e: PointerEvent) => {
     const { buildMode, targetingMode } = useStore.getState();
-    if (buildMode === 'none' || buildMode.startsWith('recruit') || !targetingMode.active) {
+    if (buildMode === 'none' && !targetingMode.active) {
         if (useStore.getState().ghostPosition !== null) actions.setGhostState(null, false);
         return;
     }
