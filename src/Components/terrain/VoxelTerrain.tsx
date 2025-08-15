@@ -1,6 +1,6 @@
 import { useStore } from '../../State/store';
 import { voxelSystem } from '../../Systems/VoxelSystem';
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import * as THREE from 'three';
 import { CHUNK_SIZE } from '../../State/slices/world';
 
@@ -13,7 +13,7 @@ const terrainMaterial = new THREE.MeshStandardMaterial({
  * It generates its geometry based on the world terrain data and its position.
  * It uses a `version` prop to know when to re-compute its geometry.
  */
-function TerrainChunk({ chunkX, chunkZ, version }: { chunkX: number, chunkZ: number, version: number }) {
+const TerrainChunk = memo(({ chunkX, chunkZ, version }: { chunkX: number, chunkZ: number, version: number }) => {
   const geometry = useMemo(() => {
     console.log(`Rebuilding chunk ${chunkX}-${chunkZ} version ${version}`);
     // This is the crucial fix: we get the terrain data inside the memoized function.
@@ -24,7 +24,7 @@ function TerrainChunk({ chunkX, chunkZ, version }: { chunkX: number, chunkZ: num
   }, [chunkX, chunkZ, version]); // The dependency array is now correct.
 
   return <mesh geometry={geometry} material={terrainMaterial} receiveShadow />;
-}
+});
 
 /**
  * The main component for rendering the entire voxel terrain.
