@@ -20,7 +20,6 @@ export const useStore = create<AppState>()(
       ...createPerfSlice(set, get, api),
       ...createEconomySlice(set, get, api),
       ...createResearchSlice(set, get, api),
-      // Combine all actions into a single actions object
       actions: {
         ...createGameSlice(set, get, api).actions,
         ...createWorldSlice(set, get, api).actions,
@@ -42,19 +41,8 @@ export const useStore = create<AppState>()(
         wave: state.wave,
         score: state.score,
         unlockedTechIds: state.unlockedTechIds,
+        // Note: We are not saving transient state like selectedSoldierId, buildMode, etc.
       }),
-      onRehydrateStorage: () => {
-        return (_state, error) => {
-          if (error) {
-            console.error('An error occurred during rehydration:', error);
-          } else {
-            // This is a bit of a hack, but it ensures the state is reset on load.
-            // A better way would be to call the actions directly on the rehydrated state.
-            useStore.getState().actions.setBuildMode('none');
-            useStore.getState().actions.setTargetingMode(false);
-          }
-        };
-      },
     }
   )
 );
