@@ -3,6 +3,7 @@
 export type Vec2 = [number, number];
 export type Vec3 = [number, number, number];
 export type Team = 'Player' | 'Enemy';
+export type Terrain = number[][];
 
 // IDs
 export type WeaponSpecId = string;

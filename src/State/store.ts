@@ -12,34 +12,24 @@ export type AppState = GameSlice & WorldSlice & UnitsSlice & BuildSlice & PerfSl
 
 export const useStore = create<AppState>()(
   persist(
-    (set, get, api) => {
-      const gameSlice = createGameSlice(set, get, api);
-      const worldSlice = createWorldSlice(set, get, api);
-      const unitsSlice = createUnitsSlice(set, get, api);
-      const buildSlice = createBuildSlice(set, get, api);
-      const perfSlice = createPerfSlice(set, get, api);
-      const economySlice = createEconomySlice(set, get, api);
-      const researchSlice = createResearchSlice(set, get, api);
-
-      return {
-        ...gameSlice,
-        ...worldSlice,
-        ...unitsSlice,
-        ...buildSlice,
-        ...perfSlice,
-        ...economySlice,
-        ...researchSlice,
-        actions: {
-          ...gameSlice.actions,
-          ...worldSlice.actions,
-          ...unitsSlice.actions,
-          ...buildSlice.actions,
-          ...perfSlice.actions,
-          ...economySlice.actions,
-          ...researchSlice.actions,
-        },
-      };
-    },
+    (set, get, api) => ({
+      ...createGameSlice(set, get, api),
+      ...createWorldSlice(set, get, api),
+      ...createUnitsSlice(set, get, api),
+      ...createBuildSlice(set, get, api),
+      ...createPerfSlice(set, get, api),
+      ...createEconomySlice(set, get, api),
+      ...createResearchSlice(set, get, api),
+      actions: {
+        ...createGameSlice(set, get, api).actions,
+        ...createWorldSlice(set, get, api).actions,
+        ...createUnitsSlice(set, get, api).actions,
+        ...createBuildSlice(set, get, api).actions,
+        ...createPerfSlice(set, get, api).actions,
+        ...createEconomySlice(set, get, api).actions,
+        ...createResearchSlice(set, get, api).actions,
+      },
+    }),
     {
       name: 'trench-forge-save',
       storage: createJSONStorage(() => localStorage),
