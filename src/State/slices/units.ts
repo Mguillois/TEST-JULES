@@ -1,6 +1,6 @@
-import { StateCreator } from 'zustand';
-import { Soldier, Enemy, Projectile, Vec2, Vec3 } from '../../Core/Types';
-import { Explosion } from '../../Systems/ProjectileSystem';
+import type { StateCreator } from 'zustand';
+import type { Soldier, Enemy, Projectile, Vec2, Vec3 } from '../../Core/Types';
+import type { Explosion } from '../../Systems/ProjectileSystem';
 
 export interface UnitsSlice {
   soldiers: Soldier[];

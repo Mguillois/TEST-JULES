@@ -6,7 +6,7 @@ export type Team = 'Player' | 'Enemy';
 
 // IDs
 export type WeaponSpecId = string;
-export type SoldierClassId = 'rifleman' | 'medic' | 'engineer';
+export type SoldierClassId = 'rifleman' | 'medic' | 'engineer' | 'sapper';
 export type TechId = string;
 
 export interface WeaponSpec {

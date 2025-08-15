@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Buildable } from '../../Core/Types';
+import type { Buildable } from '../../Core/Types';
 import { buildSystem } from '../../Systems/BuildSystem';
 
 interface MortarPitProps {

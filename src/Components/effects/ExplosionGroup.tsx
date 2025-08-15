@@ -1,7 +1,7 @@
 import { useStore } from '../../State/store';
 import { useState, useEffect } from 'react';
 import Explosion from './Explosion';
-import { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
+import type { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
 import { v4 as uuidv4 } from 'uuid';
 
 // We need to give each explosion a unique key for React to render it correctly.

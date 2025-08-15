@@ -1,5 +1,5 @@
-import { Buildable, Vec2 } from '../Core/Types';
-import { BuildMode } from '../State/slices/build';
+import type { Buildable, Vec2 } from '../Core/Types';
+import type { BuildMode } from '../State/slices/build';
 
 // Define constants for buildables
 const SIZES = {

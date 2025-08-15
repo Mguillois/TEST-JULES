@@ -1,5 +1,5 @@
 import { useStore } from '../../State/store';
-import { AppState } from '../../State/store';
+import type { AppState } from '../../State/store';
 import Enemy from './Enemy';
 
 // A selector that memoizes the enemies array.

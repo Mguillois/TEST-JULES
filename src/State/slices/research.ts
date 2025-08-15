@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { TechId } from '../../Core/Types';
+import type { StateCreator } from 'zustand';
+import type { TechId } from '../../Core/Types';
 
 export interface ResearchSlice {
   unlockedTechIds: TechId[];

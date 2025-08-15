@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { Vec2, Buildable } from '../../Core/Types';
+import type { StateCreator } from 'zustand';
+import type { Vec2, Buildable } from '../../Core/Types';
 
 export type BuildMode = 'none' | 'trench' | 'wire' | 'depot' | 'workshop' | 'barracks' | 'mortar_pit' | 'recruit_medic' | 'recruit_engineer';
 

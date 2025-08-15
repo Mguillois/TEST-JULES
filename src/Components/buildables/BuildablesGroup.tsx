@@ -1,5 +1,5 @@
 import { useStore } from '../../State/store';
-import { AppState } from '../../State/store';
+import type { AppState } from '../../State/store';
 import BarbedWire from './BarbedWire';
 import Depot from './Depot';
 import Workshop from './Workshop';

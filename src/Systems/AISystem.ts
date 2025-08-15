@@ -1,4 +1,4 @@
-import { Enemy, Vec2, Buildable } from '../Core/Types';
+import type { Enemy, Vec2, Buildable } from '../Core/Types';
 import { PATHS } from '../Core/paths';
 import { buildSystem } from './BuildSystem';
 

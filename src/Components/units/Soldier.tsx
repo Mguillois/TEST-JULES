@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Soldier as SoldierType } from '../../Core/Types';
+import type { Soldier as SoldierType } from '../../Core/Types';
 import { useStore } from '../../State/store';
 import { Ring } from '@react-three/drei';
 
@@ -11,8 +11,8 @@ const COLORS = {
     rifleman: '#4682B4', // Steel Blue
     medic: '#FFFFFF',    // White
     engineer: '#FFA500', // Orange
+    sapper: '#8B0000',   // Dark Red for enemy sapper, though this component is for player soldiers
 };
-const bodyMaterial = new THREE.MeshStandardMaterial();
 const rifleMaterial = new THREE.MeshStandardMaterial({ color: '#5C4033' }); // Dark brown
 
 function Soldier({ soldier }: SoldierProps) {

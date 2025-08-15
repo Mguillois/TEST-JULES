@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
+import type { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
 
 const DURATION = 0.5; // seconds
 

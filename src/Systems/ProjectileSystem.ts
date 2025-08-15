@@ -1,4 +1,4 @@
-import { Projectile, Vec2, Vec3, Enemy } from '../Core/Types';
+import type { Projectile, Vec2, Vec3, Enemy } from '../Core/Types';
 import { soundSystem } from './SoundSystem';
 
 export interface Hit {

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Enemy as EnemyType } from '../../Core/Types';
+import type { Enemy as EnemyType } from '../../Core/Types';
 
 interface EnemyProps {
   enemy: EnemyType;

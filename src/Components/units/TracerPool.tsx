@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore } from '../../State/store';
-import { Projectile } from '../../Core/Types';
+import type { Projectile } from '../../Core/Types';
 
 const MAX_TRACERS = 500;
 const tracerSelector = (state: { projectiles: Projectile[] }) => state.projectiles.filter(p => p.tracer);
@@ -48,7 +48,7 @@ function TracerPool() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, MAX_TRACERS]}>
       <boxGeometry args={[0.05, 0.05, 1]} />
-      <meshBasicMaterial color="#FFFF00" emissive="#FFFF00" emissiveIntensity={2} />
+      <meshStandardMaterial color="#FFFF00" emissive="#FFFF00" emissiveIntensity={2} />
     </instancedMesh>
   );
 }

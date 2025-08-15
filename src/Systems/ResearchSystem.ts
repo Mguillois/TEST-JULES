@@ -1,5 +1,5 @@
 import { useStore } from '../State/store';
-import { TechId } from '../Core/Types';
+import type { TechId } from '../Core/Types';
 
 class ResearchSystem {
   /**

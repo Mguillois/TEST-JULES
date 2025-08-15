@@ -1,4 +1,4 @@
-import { Soldier, Enemy, Projectile, Vec2, Vec3 } from '../Core/Types';
+import type { Soldier, Enemy, Projectile, Vec2, Vec3 } from '../Core/Types';
 import { WEAPON_DATA } from '../Core/data';
 import { randomNormal } from '../Core/Utils';
 import { v4 as uuidv4 } from 'uuid';
@@ -67,10 +67,10 @@ class WeaponSystem {
 
   private createProjectile(soldier: Soldier, target: Enemy): Projectile {
     const weaponSpec = WEAPON_DATA[soldier.weapon];
-    const origin: Vec3 = [soldier.pos[0], 0.8, soldier.pos[1]]; // Start projectile from barrel height
-    const targetPos: Vec3 = [target.pos[0], 0.5, target.pos[1]]; // Aim for center mass
+    const origin: Vec3 = [soldier.pos[0], 0.8, soldier.pos[1]];
+    const targetPos: Vec3 = [target.pos[0], 0.5, target.pos[1]];
 
-    const direction: Vec3 = [targetPos[0] - origin[0], 0, targetPos[2] - origin[2]]; // Flat trajectory for now
+    const direction: Vec3 = [targetPos[0] - origin[0], 0, targetPos[2] - origin[2]];
     const distance = Math.sqrt(direction[0]**2 + direction[2]**2);
     if (distance === 0) return null as unknown as Projectile;
 

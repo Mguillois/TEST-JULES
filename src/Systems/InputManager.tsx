@@ -5,25 +5,22 @@ import { buildSystem } from '../Systems/BuildSystem';
 import { mortarSystem } from './MortarSystem';
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
-import { BuildMode } from '../State/slices/build';
-import { Soldier, SoldierClassId } from '../Core/Types';
+import type { BuildMode } from '../State/slices/build';
+import type { Soldier, SoldierClassId } from '../Core/Types';
 
 const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
 const groundRaycaster = new THREE.Raycaster();
 
 function InputManager() {
-  const { buildMode, buildings, materials, manpower, targetingMode, actions } = useStore(state => ({
+  const { buildMode, targetingMode, actions } = useStore(state => ({
     buildMode: state.buildMode,
-    buildings: state.buildings,
-    materials: state.materials,
-    manpower: state.manpower,
     targetingMode: state.targetingMode,
     actions: state.actions,
   }));
   const { camera } = useThree();
 
   const createNewSoldier = (classId: SoldierClassId): Soldier => {
-    const xPos = (Math.random() - 0.5) * 80; // Widen spawn area for larger map
+    const xPos = (Math.random() - 0.5) * 80;
     return { id: uuidv4(), team: 'Player', pos: [xPos, 2], hp: 100, armor: 0.1, weapon: 'rifle', classId: classId, fireCooldown: 0, actionCooldown: 0, aimSpread: 0.1, suppressed: 0, xp: 0, moveTarget: null };
   };
 
@@ -81,11 +78,10 @@ function InputManager() {
   const handlePointerDown = (e: PointerEvent) => {
       const { buildMode, targetingMode, ghostPosition, isGhostPlacementValid, materials, selectedSoldierId, actions } = useStore.getState();
 
-      // Right-click for move commands
       if (e.button === 2 && selectedSoldierId && ghostPosition) {
           e.preventDefault();
           actions.setSoldierMoveTarget(selectedSoldierId, ghostPosition);
-          actions.selectSoldier(null); // Deselect after issuing command
+          actions.selectSoldier(null);
           return;
       }
 

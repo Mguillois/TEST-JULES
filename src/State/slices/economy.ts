@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { Economy } from '../../Core/Types';
+import type { StateCreator } from 'zustand';
+import type { Economy } from '../../Core/Types';
 
 export interface EconomySlice extends Economy {
   actions: {

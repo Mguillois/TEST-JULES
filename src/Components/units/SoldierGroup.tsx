@@ -1,5 +1,5 @@
 import { useStore } from '../../State/store';
-import { AppState } from '../../State/store';
+import type { AppState } from '../../State/store';
 import Soldier from './Soldier';
 
 // A selector that memoizes the soldiers array.

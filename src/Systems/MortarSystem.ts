@@ -1,4 +1,4 @@
-import { Vec3, Projectile } from '../Core/Types';
+import type { Vec3, Projectile } from '../Core/Types';
 import { calculateBallisticVelocity } from '../Core/Utils';
 import { v4 as uuidv4 } from 'uuid';
 

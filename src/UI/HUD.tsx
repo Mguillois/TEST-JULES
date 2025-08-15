@@ -1,5 +1,5 @@
 import { useStore } from '../State/store';
-import { AppState } from '../State/store';
+import type { AppState } from '../State/store';
 
 // Selector to get only the needed state for the HUD
 const hudSelector = (state: AppState) => ({

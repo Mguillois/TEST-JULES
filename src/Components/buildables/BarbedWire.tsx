@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Buildable } from '../../Core/Types';
+import type { Buildable } from '../../Core/Types';
 
 interface BarbedWireProps {
   building: Buildable;

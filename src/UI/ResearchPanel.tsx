@@ -1,6 +1,6 @@
 import { useStore } from '../State/store';
 import { TECH_TREE } from '../Core/data';
-import { Tech, TechId } from '../Core/Types';
+import type { Tech } from '../Core/Types';
 
 const panelStyle: React.CSSProperties = {
     position: 'absolute',
@@ -39,7 +39,7 @@ function ResearchPanel() {
         unlockedTechIds: state.unlockedTechIds,
         materials: state.materials,
         actions: state.actions,
-        closePanel: state.actions.toggleResearchPanel, // We'll need to add this action
+        closePanel: state.actions.toggleResearchPanel,
     }));
 
     const handleUnlock = (tech: Tech) => {

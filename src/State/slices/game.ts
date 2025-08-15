@@ -1,4 +1,4 @@
-import { StateCreator } from 'zustand';
+import type { StateCreator } from 'zustand';
 
 export interface GameSlice {
   gameState: 'MainMenu' | 'Playing' | 'Paused' | 'GameOver';
@@ -30,6 +30,6 @@ export const createGameSlice: StateCreator<GameSlice, [], [], GameSlice> = (set)
     resumeGame: () => set((state) => (state.gameState === 'Paused' ? { gameState: 'Playing' } : state)),
     endGame: () => set({ gameState: 'GameOver' }),
     toggleResearchPanel: () => set((state) => ({ isResearchPanelOpen: !state.isResearchPanelOpen })),
-    setTargetingMode: (active, fromBuildingId = null) => set({ targetingMode: { active, fromBuildingId } }),
+    setTargetingMode: (active, fromBuildingId) => set({ targetingMode: { active, fromBuildingId: fromBuildingId || null } }),
   },
 });

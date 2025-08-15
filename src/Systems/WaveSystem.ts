@@ -1,4 +1,4 @@
-import { WaveSpec, Enemy, SoldierClassId } from '../Core/Types';
+import type { WaveSpec, Enemy, SoldierClassId } from '../Core/Types';
 import { v4 as uuidv4 } from 'uuid';
 import { PATHS } from '../Core/paths';
 
@@ -84,14 +84,15 @@ class WaveSystem {
       pathId: chosenPathId,
       waypointIndex: 1,
       pauseTimer: 0,
-      hp: chosenType === 'sapper' ? 65 : 50, // Sappers are tougher, but not tanks
+      hp: chosenType === 'sapper' ? 65 : 50,
       armor: chosenType === 'sapper' ? 0.1 : 0,
-      weapon: 'rifle', // Sappers might not have a weapon, but the type requires it
-      classId: chosenType as any, // The type system needs alignment here
+      weapon: 'rifle',
+      classId: chosenType as SoldierClassId,
       fireCooldown: 0,
       aimSpread: 0.2,
       suppressed: 0,
       xp: chosenType === 'sapper' ? 10 : 5,
+      moveTarget: null,
     };
   }
 }

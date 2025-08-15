@@ -1,10 +1,9 @@
-import { Enemy, Projectile, Vec2, Vec3 } from '../Core/Types';
+import type { Enemy, Projectile, Vec2, Vec3 } from '../Core/Types';
 
 const SUPPRESSION_RADIUS_SQ = 2 * 2;
 const SUPPRESSION_PER_NEAR_MISS = 0.15;
 const SUPPRESSION_DECAY_RATE = 0.2;
 
-// Check distance in 3D space now
 const distSq = (a: Vec3, b: Vec2) => (a[0] - b[0])**2 + (a[1] - 0.5)**2 + (a[2] - b[1])**2;
 
 class SuppressionSystem {

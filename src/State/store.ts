@@ -1,36 +1,39 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { createGameSlice, GameSlice } from './slices/game';
-import { createWorldSlice, WorldSlice } from './slices/world';
-import { createUnitsSlice, UnitsSlice } from './slices/units';
-import { createBuildSlice, BuildSlice } from './slices/build';
-import { createPerfSlice, PerfSlice } from './slices/perf';
-import { createEconomySlice, EconomySlice } from './slices/economy';
-import { createResearchSlice, ResearchSlice } from './slices/research';
+import { createGameSlice, type GameSlice } from './slices/game';
+import { createWorldSlice, type WorldSlice } from './slices/world';
+import { createUnitsSlice, type UnitsSlice } from './slices/units';
+import { createBuildSlice, type BuildSlice } from './slices/build';
+import { createPerfSlice, type PerfSlice } from './slices/perf';
+import { createEconomySlice, type EconomySlice } from './slices/economy';
+import { createResearchSlice, type ResearchSlice } from './slices/research';
 
-// The combined state of all slices
 export type AppState = GameSlice & WorldSlice & UnitsSlice & BuildSlice & PerfSlice & EconomySlice & ResearchSlice;
 
-/**
- * The main Zustand store for the application.
- * It combines all the individual state slices into a single store.
- * It also uses the `persist` middleware to save parts of the state to localStorage.
- */
 export const useStore = create<AppState>()(
   persist(
-    (...a) => ({
-      ...createGameSlice(...a),
-      ...createWorldSlice(...a),
-      ...createUnitsSlice(...a),
-      ...createBuildSlice(...a),
-      ...createPerfSlice(...a),
-      ...createEconomySlice(...a),
-  ...createResearchSlice(...a),
+    (set, get, api) => ({
+      ...createGameSlice(set, get, api),
+      ...createWorldSlice(set, get, api),
+      ...createUnitsSlice(set, get, api),
+      ...createBuildSlice(set, get, api),
+      ...createPerfSlice(set, get, api),
+      ...createEconomySlice(set, get, api),
+      ...createResearchSlice(set, get, api),
+      // Combine all actions into a single actions object
+      actions: {
+        ...createGameSlice(set, get, api).actions,
+        ...createWorldSlice(set, get, api).actions,
+        ...createUnitsSlice(set, get, api).actions,
+        ...createBuildSlice(set, get, api).actions,
+        ...createPerfSlice(set, get, api).actions,
+        ...createEconomySlice(set, get, api).actions,
+        ...createResearchSlice(set, get, api).actions,
+      },
     }),
     {
-      name: 'trench-forge-save', // name of the item in the storage
+      name: 'trench-forge-save',
       storage: createJSONStorage(() => localStorage),
-      // Only persist a subset of the state
       partialize: (state) => ({
         buildings: state.buildings,
         ammo: state.ammo,
@@ -38,17 +41,17 @@ export const useStore = create<AppState>()(
         manpower: state.manpower,
         wave: state.wave,
         score: state.score,
+        unlockedTechIds: state.unlockedTechIds,
       }),
-      // This function is called when the storage is rehydrated
-      onRehydrateStorage: (state) => {
-        console.log('Hydrated from storage. Welcome back!');
-        // We can return a function to be called after rehydration completes
-        return (state, error) => {
+      onRehydrateStorage: () => {
+        return (_state, error) => {
           if (error) {
             console.error('An error occurred during rehydration:', error);
           } else {
-            // Set buildMode to 'none' on load, regardless of saved state
-            state?.actions.setBuildMode('none');
+            // This is a bit of a hack, but it ensures the state is reset on load.
+            // A better way would be to call the actions directly on the rehydrated state.
+            useStore.getState().actions.setBuildMode('none');
+            useStore.getState().actions.setTargetingMode(false);
           }
         };
       },

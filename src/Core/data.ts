@@ -1,4 +1,4 @@
-import { WeaponSpec, WeaponSpecId } from './Types';
+import type { WeaponSpec, WeaponSpecId } from './Types';
 
 export const WEAPON_DATA: Record<WeaponSpecId, WeaponSpec> = {
   rifle: {
@@ -12,7 +12,7 @@ export const WEAPON_DATA: Record<WeaponSpecId, WeaponSpec> = {
   },
 };
 
-import { Tech, TechId } from './Types';
+import type { Tech, TechId } from './Types';
 
 export const BUILDING_INCOME: Record<string, { ammo?: number, materials?: number, manpower?: number }> = {
     'Depot': { ammo: 60 },

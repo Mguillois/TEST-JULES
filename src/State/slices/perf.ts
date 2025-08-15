@@ -1,5 +1,5 @@
-import { StateCreator } from 'zustand';
-import { Frameloop } from '@react-three/fiber';
+import type { StateCreator } from 'zustand';
+import type { Frameloop } from '@react-three/fiber';
 
 export interface PerfSlice {
   /**

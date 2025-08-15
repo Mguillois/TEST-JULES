@@ -1,4 +1,4 @@
-import { Vec2 } from './Types';
+import type { Vec2 } from './Types';
 
 /**
  * A record of all predefined enemy paths.

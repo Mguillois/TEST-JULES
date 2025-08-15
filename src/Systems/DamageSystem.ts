@@ -1,7 +1,7 @@
-import { Enemy, Vec2, Vec3 } from '../Core/Types';
+import type { Enemy, Vec2, Vec3 } from '../Core/Types';
 import { WORLD_WIDTH, WORLD_DEPTH } from '../State/slices/world';
 import { soundSystem } from './SoundSystem';
-import { Explosion } from './ProjectileSystem';
+import type { Explosion } from './ProjectileSystem';
 
 export interface Hit {
   enemyId: string;

@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { useMemo, useRef, useEffect } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 
 const NUM_PARTICLES = 50;

@@ -1,4 +1,4 @@
-import { Soldier, Vec2 } from '../Core/Types';
+import type { Soldier, Vec2 } from '../Core/Types';
 
 const HEAL_AMOUNT = 15;
 const HEAL_COOLDOWN = 2.5; // seconds

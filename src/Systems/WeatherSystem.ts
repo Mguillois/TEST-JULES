@@ -1,6 +1,5 @@
 import { useStore } from '../State/store';
 
-const CHANCE_TO_CHANGE_WEATHER = 0.001; // Small chance each frame to change weather
 const MIN_WEATHER_DURATION = 20; // seconds
 const MAX_WEATHER_DURATION = 60; // seconds
 

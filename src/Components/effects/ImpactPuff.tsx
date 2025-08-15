@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useStore } from '../../State/store';
-import { Vec3 } from '../../Core/Types';
+import type { Vec3 } from '../../Core/Types';
 
 const MAX_PUFFS = 500;
 const puffSelector = (state: { impactPuffs: Vec3[] }) => state.impactPuffs;

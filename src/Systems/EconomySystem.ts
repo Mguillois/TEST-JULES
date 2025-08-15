@@ -1,4 +1,4 @@
-import { Buildable } from '../Core/Types';
+import type { Buildable } from '../Core/Types';
 import { BUILDING_INCOME } from '../Core/data';
 
 interface Income {

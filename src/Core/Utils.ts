@@ -17,7 +17,7 @@ function randomStandardNormal(): number {
  * @param stdDev The standard deviation of the distribution.
  * @returns A random number.
  */
-import { Vec3 } from './Types';
+import type { Vec3 } from './Types';
 
 export function randomNormal(mean: number, stdDev: number): number {
   return mean + randomStandardNormal() * stdDev;

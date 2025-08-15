@@ -1,4 +1,4 @@
-import { Soldier, Buildable, Vec2 } from '../Core/Types';
+import type { Soldier, Buildable, Vec2 } from '../Core/Types';
 import { buildSystem } from './BuildSystem';
 
 const REPAIR_AMOUNT = 20;

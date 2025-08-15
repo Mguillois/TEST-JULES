@@ -1,4 +1,4 @@
-import { Soldier, Vec2 } from '../Core/Types';
+import type { Soldier, Vec2 } from '../Core/Types';
 
 const BASE_PLAYER_MOVE_SPEED = 2.0; // m/s
 const MUD_SLOWDOWN_FACTOR = 0.8; // 20% speed reduction in rain
