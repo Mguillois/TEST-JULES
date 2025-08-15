@@ -55,9 +55,14 @@ export const buildSystem = {
     },
     validatePlacement: (newBuildingPos: Vec2, type: BuildMode, existingBuildings: Buildable[]): boolean => {
         if (type === 'none' || type.startsWith('recruit')) return false;
-        if (type === 'trench') return true;
 
-        const newBuildingSize = buildSystem.getSize(type);
+        const newBuildingSize = buildSystem.getSize(type as any); // Use `as any` to bypass TS check here, guard above handles it
+        if (!newBuildingSize || (newBuildingSize[0] === 0 && newBuildingSize[1] === 0)) {
+            // This case handles recruitment types which don't have a size.
+            return false;
+        }
+
+        if (type === 'trench') return true;
         for (const building of existingBuildings) {
             const existingKind = building.kind.toLowerCase() as keyof typeof SIZES;
             const existingSize = buildSystem.getSize(existingKind);

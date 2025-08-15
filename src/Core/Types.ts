@@ -35,15 +35,17 @@ export interface Soldier {
     moveTarget: Vec2 | null;
 }
 
-// Explicitly define Enemy to avoid Omit issues
+// Explicitly define Enemy to ensure all properties are present
 export interface Enemy {
     id: string;
+    // team: 'Enemy' is implicit
     pos: Vec2;
     hp: number;
     armor: number;
     weapon: WeaponSpecId;
     classId: SoldierClassId;
     fireCooldown: number;
+    // actionCooldown: not applicable to enemies
     aimSpread: number;
     suppressed: number;
     xp: number;

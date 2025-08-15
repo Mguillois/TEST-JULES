@@ -3,23 +3,24 @@ import { useState, useEffect } from 'react';
 import Explosion from './Explosion';
 import type { Explosion as ExplosionType } from '../../Systems/ProjectileSystem';
 import { v4 as uuidv4 } from 'uuid';
-import { shallow } from 'zustand/shallow';
 
 interface KeyedExplosion extends ExplosionType {
   key: string;
 }
 
 function ExplosionGroup() {
-  // Subscribing to an array can cause re-renders. `shallow` helps here.
-  const newExplosions = useStore(state => state.explosions, shallow);
+  // Subscribe only to a primitive value that changes when new explosions occur.
+  const newExplosionCount = useStore(state => state.explosions.length);
   const [activeExplosions, setActiveExplosions] = useState<KeyedExplosion[]>([]);
 
   useEffect(() => {
+    // When the count changes, get the new explosions and add them to our local state.
+    const newExplosions = useStore.getState().explosions;
     if (newExplosions.length > 0) {
-      const keyed = newExplosions.map(e => ({ ...e, key: uuidv4() }));
+      const keyed = newExplosions.map((e: ExplosionType) => ({ ...e, key: uuidv4() }));
       setActiveExplosions(prev => [...prev, ...keyed]);
     }
-  }, [newExplosions]);
+  }, [newExplosionCount]); // This effect only runs when the length changes.
 
   return (
     <group name="explosions">
