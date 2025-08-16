@@ -6,14 +6,14 @@ import { useStore } from '../State/store';
 
 function App() {
   const isResearchPanelOpen = useStore(state => state.isResearchPanelOpen);
-  const actions = useStore(state => state.actions);
+  const { setBuildMode, setTargetingMode } = useStore.getState().actions;
 
   // This effect runs once on startup and resets any transient UI state
   // that shouldn't be persisted, ensuring a clean start after a page load.
   useEffect(() => {
-    actions.setBuildMode('none');
-    actions.setTargetingMode(false);
-  }, [actions]);
+    setBuildMode('none');
+    setTargetingMode(false);
+  }, []);
 
   return (
     <>

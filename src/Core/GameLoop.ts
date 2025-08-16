@@ -1,4 +1,4 @@
-import { gameState } from '../State/game-state';
+import { useStore } from '../State/store';
 import { waveSystem } from '../Systems/WaveSystem';
 import { aiSystem } from '../Systems/AISystem';
 import { weaponSystem } from '../Systems/WeaponSystem';
@@ -10,28 +10,27 @@ import { medicSystem } from '../Systems/MedicSystem';
 import { engineerSystem } from '../Systems/EngineerSystem';
 import { playerAISystem } from '../Systems/PlayerAISystem';
 import { weatherSystem } from '../Systems/WeatherSystem';
-import type { Terrain } from '../Core/Types';
 
 /**
  * The main game loop tick function.
  */
-export function tick(dt: number, isRaining: boolean, terrain: Terrain) {
-  const state = gameState.getState();
+export function tick(dt: number) {
+  const state = useStore.getState();
 
   // 1. Update weather
   weatherSystem.update(dt);
 
   // 2. Update player soldiers
-  const soldiersAfterMove = playerAISystem.update(dt, state.soldiers, isRaining);
-  const { newProjectiles, updatedSoldiers: soldiersAfterWeapons, muzzleFlashPositions } = weaponSystem.update(dt, soldiersAfterMove, state.enemies, state.ammo, terrain);
+  const soldiersAfterMove = playerAISystem.update(dt, state.soldiers, state.isRaining);
+  const { newProjectiles, updatedSoldiers: soldiersAfterWeapons, muzzleFlashPositions } = weaponSystem.update(dt, soldiersAfterMove, state.enemies, state.ammo, state.terrain);
   const soldiersAfterMedics = medicSystem.update(dt, soldiersAfterWeapons);
   const { updatedSoldiers: finalSoldiers, updatedBuildings } = engineerSystem.update(dt, soldiersAfterMedics, state.buildings);
 
   // 3. Update projectiles and enemies
   const { updatedProjectiles, hits, impacts, explosions } = projectileSystem.update(dt, state.projectiles, state.enemies);
-  const enemiesAfterDamage = damageSystem.applyHits(state.enemies, hits, terrain, explosions);
+  const enemiesAfterDamage = damageSystem.applyHits(state.enemies, hits, state.terrain, explosions);
   const enemiesAfterSuppression = suppressionSystem.update(dt, enemiesAfterDamage, updatedProjectiles);
-  const { updatedEnemies: finalEnemies, updatedBuildings: finalBuildings } = aiSystem.update(dt, enemiesAfterSuppression, updatedBuildings, isRaining);
+  const { updatedEnemies: finalEnemies, updatedBuildings: finalBuildings } = aiSystem.update(dt, enemiesAfterSuppression, updatedBuildings, state.isRaining);
 
   // 4. Spawn new enemies
   const newEnemies = waveSystem.update(dt);
@@ -43,8 +42,11 @@ export function tick(dt: number, isRaining: boolean, terrain: Terrain) {
   const ammoSpent = newProjectiles.filter(p => !p.explosion).length;
   const income = economySystem.update(dt, finalBuildings);
 
+  // Process one dirty chunk per frame
+  state.actions.processDirtyChunk();
+
   // --- Batch update the state once at the end of the tick ---
-  gameState.setState({
+  useStore.setState({
     time: newTime,
     soldiers: finalSoldiers,
     buildings: finalBuildings,

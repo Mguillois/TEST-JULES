@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from '@react-three/drei';
 import GameManager from '../Core/GameManager';
-import StateBridge from '../Core/StateBridge';
 import SoldierGroup from '../Components/units/SoldierGroup';
 import EnemyGroup from '../Components/units/EnemyGroup';
 import TracerPool from '../Components/units/TracerPool';
@@ -25,7 +24,6 @@ function Scene() {
   return (
     <>
       <GameManager />
-      <StateBridge />
       <InputManager />
 
       {/* Environment */}
