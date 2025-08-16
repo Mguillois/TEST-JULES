@@ -1,12 +1,12 @@
 import { createStore } from 'zustand/vanilla';
-import type { Soldier, Enemy, Building, Projectile } from '../Core/Types';
+import type { Soldier, Enemy, Buildable, Projectile } from '../Core/Types';
 import type { Explosion } from '../Systems/ProjectileSystem';
 import type { Vec2, Vec3 } from '../Core/Types';
 
 interface GameState {
   time: number;
   soldiers: Soldier[];
-  buildings: Building[];
+  buildings: Buildable[];
   enemies: Enemy[];
   projectiles: Projectile[];
   muzzleFlashes: Vec2[];
