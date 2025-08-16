@@ -30,6 +30,11 @@ export const createGameSlice: StateCreator<GameSlice, [], [], GameSlice> = (set)
     resumeGame: () => set((state) => (state.gameState === 'Paused' ? { gameState: 'Playing' } : state)),
     endGame: () => set({ gameState: 'GameOver' }),
     toggleResearchPanel: () => set((state) => ({ isResearchPanelOpen: !state.isResearchPanelOpen })),
-    setTargetingMode: (active, fromBuildingId) => set({ targetingMode: { active, fromBuildingId: fromBuildingId || null } }),
+    setTargetingMode: (active, fromBuildingId) =>
+      set((s) =>
+        s.targetingMode.active === active
+          ? s
+          : { targetingMode: { active, fromBuildingId: fromBuildingId || null } }
+      ),
   },
 });

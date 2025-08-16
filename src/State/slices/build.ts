@@ -21,9 +21,12 @@ export const createBuildSlice: StateCreator<BuildSlice, [], [], BuildSlice> = (s
   ghostPosition: null,
   isGhostPlacementValid: false,
   actions: {
-    setBuildMode: (mode) => {
-      set({ buildMode: mode, ghostPosition: null, isGhostPlacementValid: false });
-    },
+    setBuildMode: (mode) =>
+      set((s) =>
+        s.buildMode === mode
+          ? s
+          : { buildMode: mode, ghostPosition: null, isGhostPlacementValid: false }
+      ),
     setGhostState: (pos, isValid) => {
       set({ ghostPosition: pos, isGhostPlacementValid: isValid });
     },
